@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #8750f7;
+    --color-secondary: #2a1454;
+    --color-accent-1: #0f0715;
+    --color-accent-2: #140c1c;
+    --color-primary-light: #9b8dff;
+    --color-body: #dddddd;
+}
+
+body {
+    @apply text-body bg-accent-1;
+    font-family: "Sora", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
