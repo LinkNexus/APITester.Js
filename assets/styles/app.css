@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
 @import "tailwindcss";
+@source "../../views/";
 
 @theme {
     --color-primary: #8750f7;

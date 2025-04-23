@@ -7,6 +7,7 @@
     "plugins": [{ "name": "@kitajs/ts-html-plugin" }],
     "paths": {
       "#views/*": ["./views/*.tsx"],
-    }
+    },
+    "experimentalDecorators": true
   },
 }

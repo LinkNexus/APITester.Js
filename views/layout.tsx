@@ -1,5 +1,6 @@
 import { createElement, Fragment, PropsWithChildren } from "@kitajs/html";
-import { readManifest } from "../src/helpers/manifest-reader.js";
+import { readManifest } from "../src/helpers/client/manifest.js";
+import { Header } from "./fragments/header.js";
 
 export function BaseLayout({ children, title }: PropsWithChildren<{ title?: string }>) {
     return (
@@ -13,6 +14,7 @@ export function BaseLayout({ children, title }: PropsWithChildren<{ title?: stri
                     <Assets />
                 </head>
                 <body>
+                    <Header />
                     {children}
                 </body>
             </html>
@@ -36,9 +38,9 @@ async function Assets() {
     const manifestOutput = await readManifest("public/.vite/manifest.json");
     const entrypoints = manifestOutput.map((item) => {
         return createElement(Fragment, {}, [
-            <script src={item.file} type="module"></script>,
+            <script src={`/public/${item.file}`} type="module"></script>,
             ...item.css.map((css) => (
-                <link rel="stylesheet" href={css} />
+                <link rel="stylesheet" href={`/public/${css}`} />
             ))
         ]);
     })
