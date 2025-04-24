@@ -7,6 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.25.9",
     "@fastify/formbody": "^8.0.2",
     "@fastify/http-proxy": "^11.1.2",
     "@fastify/static": "^8.1.1",
@@ -29,6 +30,7 @@
     "vite": "^6.3.2"
   },
   "imports": {
-    "#views/*": "./views/*.tsx"
+    "#views/*": "./views/*.tsx",
+    "#helpers/*": "./src/helpers/*.ts"
   }
 }

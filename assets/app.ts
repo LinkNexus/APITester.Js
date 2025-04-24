@@ -1,4 +1,6 @@
 import "./react-refresh.js";
 import "./styles/app.css";
+import {loadCustomElements} from "@/helpers/custom-elements";
 
-console.log("Hello from app.ts");
+loadCustomElements();
+

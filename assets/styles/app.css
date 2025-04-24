@@ -15,3 +15,52 @@ body {
     @apply text-body bg-accent-1;
     font-family: "Sora", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+input, textarea, select {
+    &:not([type="submit"], [type="checkbox"]) {
+        @apply bg-accent-2 rounded-lg p-2 border border-secondary;
+    }
+
+    &:disabled {
+        @apply bg-secondary cursor-not-allowed;
+    }
+
+    &:focus {
+        @apply border-2 border-primary;
+    }
+
+    &[type="checkbox"] {
+        @apply rounded bg-transparent;
+
+        &:focus, &:checked {
+            @apply bg-primary;
+        }
+    }
+}
+
+@layer components {
+    .clickable {
+        box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+        @apply cursor-pointer;
+
+        &:active {
+            @apply transform scale-95;
+            box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+        }
+    }
+
+    .active-link {
+        @apply relative;
+
+        &::before {
+            @apply w-full h-[2px] rounded absolute bottom-[-2px] left-0;
+            content: "";
+                /* border-radius: 4px; */
+            background-image: linear-gradient(260deg, var(--color-secondary), var(--color-primary));
+            transition: transform .3s ease-in-out;
+            transform-origin: left;
+            transform: scaleX(1);
+        }
+    }
+
+}

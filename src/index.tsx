@@ -4,7 +4,7 @@ import { fastifyKitaHtml } from "@kitajs/fastify-html-plugin";
 import fastifyFormbody from '@fastify/formbody';
 import path from 'node:path';
 import { cwd } from 'node:process';
-import { registerRoutes } from './helpers/route.js';
+import { registerRoutes } from '#helpers/route';
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const app = Fastify({ logger: true });

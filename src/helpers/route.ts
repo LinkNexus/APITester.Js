@@ -14,24 +14,26 @@ export async function registerRoutes(app: FastifyInstance) {
 
     controllers.forEach((controller) => {
         const { default: Controller } = controller;
-        const prefixMetaData = Reflect.getMetadata("route", Controller);
-        const prefix = prefixMetaData?.path || "";
+        const globalMetaData = Reflect.getMetadata("route", Controller);
+        const prefix = globalMetaData?.path || "";
+        const globalMethods = globalMetaData?.methods || [];
 
         const methods = Object.getOwnPropertyNames(Controller.prototype).filter(name => typeof Controller.prototype[name] === 'function' && name !== 'constructor');
         methods.forEach((method) => {
             if (Reflect.hasMetadata("route", Controller.prototype, method)) {
-                const { path, methods: httpMethods } = Reflect.getMetadata("route", Controller.prototype, method);
+                const { path, methods: httpMethods }: RouteMetadata = Reflect.getMetadata("route", Controller.prototype, method);
+                const httpMethodsSet = new Set([...globalMethods, ...httpMethods]);
 
-                httpMethods.forEach((httpMethod) => {
+                httpMethodsSet.forEach((httpMethod) => {
                     app.route({
                         method: httpMethod,
                         url: prefix + path,
-                        handler: async (request, reply) => {
+                        handler: async function (request, reply) {
                             return await Controller.prototype[method]({ request, reply });
                         }
                     });
-                })
+                });
             }
-        })
-    })
+        });
+    });
 }

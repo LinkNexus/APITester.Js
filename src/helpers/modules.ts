@@ -35,7 +35,7 @@ async function listFiles(path: string) {
         withFileTypes: true
     });
 
-    const files = [];
+    const files: string[] = [];
 
     for (const file of res) {
         if (file.isDirectory()) {

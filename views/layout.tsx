@@ -1,48 +1,22 @@
-import { createElement, Fragment, PropsWithChildren } from "@kitajs/html";
-import { readManifest } from "../src/helpers/client/manifest.js";
-import { Header } from "./fragments/header.js";
+import { Fragment, PropsWithChildren } from "@kitajs/html";
+import { Assets } from "./fragments/assets.js";
 
 export function BaseLayout({ children, title }: PropsWithChildren<{ title?: string }>) {
     return (
         <>
-            {'<!doctype html>'}
+            {'<!DOCTYPE html>'}
             <html lang="en">
                 <head>
                     <meta charset="UTF-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <title>{title || 'Hello World!'}</title>
-                    <Assets />
+                    <Assets entrypoint="app.ts" />
                 </head>
                 <body>
-                    <Header />
+                    <app-header></app-header>
                     {children}
                 </body>
             </html>
         </>
     );
-}
-
-async function Assets() {
-    const env = process.env.NODE_ENV || 'development';
-
-    if (env === 'development') {
-        const assetsOrigin = `http://localhost:${process.env.VITE_PORT || 5333}`;
-        return (
-            createElement(Fragment, {}, [
-                <link rel="stylesheet" href={`${assetsOrigin}/styles/app.css`} />,
-                <script src={`${assetsOrigin}/app.js`} type="module"></script>
-            ])
-        );
-    }
-
-    const manifestOutput = await readManifest("public/.vite/manifest.json");
-    const entrypoints = manifestOutput.map((item) => {
-        return createElement(Fragment, {}, [
-            <script src={`/public/${item.file}`} type="module"></script>,
-            ...item.css.map((css) => (
-                <link rel="stylesheet" href={`/public/${css}`} />
-            ))
-        ]);
-    })
-    return createElement(Fragment, {}, entrypoints);
 }

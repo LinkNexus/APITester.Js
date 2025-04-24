@@ -5,9 +5,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@kitajs/html",
     "plugins": [{ "name": "@kitajs/ts-html-plugin" }],
-    "paths": {
-      "#views/*": ["./views/*.tsx"],
-    },
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolvePackageJsonImports": true
   },
 }
