@@ -16,7 +16,7 @@ body {
     font-family: "Sora", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-input, textarea, select {
+input, textarea, select, .simple-editor, div[contenteditable="true"] {
     &:not([type="submit"], [type="checkbox"]) {
         @apply bg-accent-2 rounded-lg p-2 border border-secondary;
     }
@@ -38,29 +38,63 @@ input, textarea, select {
     }
 }
 
-@layer components {
-    .clickable {
-        box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
-        @apply cursor-pointer;
+@utility clickable {
+    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+    @apply cursor-pointer;
 
-        &:active {
-            @apply transform scale-95;
-            box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-        }
+    &:active {
+        @apply transform scale-95;
+        box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
     }
+}
 
-    .active-link {
-        @apply relative;
+@utility button {
+    @apply cursor-pointer outline-none transition-all flex content-center justify-center text-lg font-semibold rounded-full py-3 px-8 clickable;
 
-        &::before {
-            @apply w-full h-[2px] rounded absolute bottom-[-2px] left-0;
-            content: "";
-                /* border-radius: 4px; */
-            background-image: linear-gradient(260deg, var(--color-secondary), var(--color-primary));
-            transition: transform .3s ease-in-out;
-            transform-origin: left;
-            transform: scaleX(1);
-        }
+    &:disabled {
+        @apply cursor-not-allowed bg-none bg-gray-400;
     }
+}
 
+.button-primary {
+    @apply button bg-gradient-to-r from-primary to-secondary text-white;
+
+    &:not(:disabled):hover {
+        @apply bg-gradient-to-r from-secondary to-primary;
+    }
+}
+
+.button-secondary {
+    @apply button text-primary border-2 border-secondary;
+
+    &:hover {
+        @apply bg-gradient-to-r from-primary to-secondary text-white;
+    }
+}
+
+
+.active-link {
+    @apply relative;
+
+    &::before {
+        @apply w-full h-[2px] rounded absolute bottom-[-2px] left-0;
+        content: "";
+        /* border-radius: 4px; */
+        background-image: linear-gradient(260deg, var(--color-secondary), var(--color-primary));
+        transition: transform .3s ease-in-out;
+        transform-origin: left;
+        transform: scaleX(1);
+    }
+}
+
+.background-gradient {
+    background: linear-gradient(to right, var(--color-accent-1), 55%, var(--color-secondary));
+}
+
+.dashed-borders {
+    @apply border-dashed border-primary;
+}
+
+[data-tab-section].active {
+    @apply bg-primary;
 }

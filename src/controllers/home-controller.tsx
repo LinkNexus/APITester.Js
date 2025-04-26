@@ -4,7 +4,7 @@ import { HttpContext } from "../types.js";
 
 export default class HomeController {
 
-    @route({ path: "/", methods: ["GET", "POST"] })
+    @route({ path: "/", methods: ["GET"] })
     index({ request, reply }: HttpContext) {
         if (request.method === "POST") {
             return request.body;
@@ -13,6 +13,11 @@ export default class HomeController {
         return reply.html(
             <HomePage />
         );
+    }
+
+    @route({ path: "/", methods: ["POST"] })
+    createRequest({ request }: HttpContext) {
+        return request.body;
     }
 
 }

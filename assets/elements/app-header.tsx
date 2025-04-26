@@ -1,18 +1,28 @@
-import {reactCustomElement} from "@/helpers/custom-elements";
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
+import {AbstractCustomElement} from "@/helpers/custom-elements";
 
-@reactCustomElement("app-header")
-class Header extends HTMLElement {
+export default class AppHeader extends AbstractCustomElement {
     Element() {
         const subMenuRef = useRef<HTMLDivElement>(null);
+        const headerRef = useRef<HTMLHeadingElement>(null);
         function toggleMenu() {
             subMenuRef.current?.classList.toggle("hidden");
             subMenuRef.current?.classList.toggle("block");
         }
 
+        useEffect(() => {
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 0) {
+                    headerRef.current?.classList.add("bg-black");
+                } else {
+                    headerRef.current?.classList.remove("bg-black");
+                }
+            })
+        }, []);
+
         return (
-            <header className="w-full">
-                <div className="flex px-3 py-3 md:px-8 items-center justify-between gap-x-6">
+            <header ref={headerRef} className="w-full sticky top-0 z-[5]">
+                <div className="flex px-3 py-3 md:px-8 items-center justify-between gap-x-6 mb-5">
                     <div className="flex items-center flex-wrap gap-x-2 lg:ml-4">
                         <img className="w-12" src="/logo.png" alt="Logo"/>
                         <span className="h-fit text-xl inline-block font-semibold">ApiTester.Js</span>
@@ -34,7 +44,7 @@ class Header extends HTMLElement {
                         <nav>
                             <ul className="hidden md:flex h-full items-center gap-x-3">
                                 <li>
-                                    <a className="active-link hover:text-primary-light" href="/">Home</a>
+                                    <a className="active-link hover:text-primary-light" href="/public">Home</a>
                                 </li>
                                 <li>
                                     <a href="/" className="hover:text-primary-light">Create</a>
@@ -71,9 +81,5 @@ class Header extends HTMLElement {
                 </div>
             </header>
         );
-    }
-
-    connectedCallback() {
-        console.log("hello World!");
     }
 }

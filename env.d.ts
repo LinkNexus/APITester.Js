@@ -1,1 +1,0 @@
-/// <reference types="@kitajs/html/all-types.d.ts" />
