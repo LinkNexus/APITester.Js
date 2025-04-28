@@ -16,7 +16,7 @@ body {
     font-family: "Sora", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-input, textarea, select, .simple-editor, div[contenteditable="true"] {
+input, textarea, select, .simple-editor, div[contenteditable="true"], .special-container {
     &:not([type="submit"], [type="checkbox"]) {
         @apply bg-accent-2 rounded-lg p-2 border border-secondary;
     }
@@ -95,6 +95,26 @@ input, textarea, select, .simple-editor, div[contenteditable="true"] {
     @apply border-dashed border-primary;
 }
 
-[data-tab-section].active {
-    @apply bg-primary;
+[data-tabs-triggers], [data-tabs-group] {
+    @apply flex min-w-full;
+}
+
+[data-tabs-group] {
+    @apply flex-col;
+}
+
+[data-tabs-triggers]>[data-tab-section] {
+    @apply w-full text-center bg-accent-2 p-2 cursor-pointer border-secondary border clickable;
+
+    &.active {
+        @apply bg-primary;
+    }
+
+    &:first-child {
+        @apply rounded-s-xl;       
+    }
+    
+    &:last-child {
+        @apply rounded-e-xl;
+    }
 }

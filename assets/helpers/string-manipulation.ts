@@ -4,3 +4,9 @@ export function upperCamelToDashCase(str: string) {
         .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2') // Insert dash between two uppercase when the second is followed by lowercase
         .toLowerCase();
 }
+
+export function dashToCamel(str) {
+    return str.replace(/-([a-z])/g, function(match, letter) {
+        return letter.toUpperCase();
+    });
+}
