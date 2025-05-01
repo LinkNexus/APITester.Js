@@ -14,7 +14,7 @@ export function BaseLayout({ children, title }: PropsWithChildren<{ title?: stri
                 </head>
                 <body>
                     <app-header></app-header>
-                    <div class="flex items-center justify-center w-full">
+                    <div class="w-full">
                         {children}
                     </div>
                 </body>

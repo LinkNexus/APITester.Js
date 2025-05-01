@@ -6,6 +6,7 @@ import path from 'node:path';
 import { cwd } from 'node:process';
 import { registerRoutes } from '#helpers/route';
 import fastifyMultipart from "@fastify/multipart";
+import FastifyCookie from '@fastify/cookie';
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3333;
 const app = Fastify();
@@ -17,8 +18,14 @@ app.register(FastifyStatic, {
     prefix: '/'
 });
 app.register(fastifyFormbody);
-app.register(fastifyMultipart, {
-    // attachFieldsToBody: true,
+app.register(fastifyMultipart);
+app.register(FastifyCookie, {
+    secret: process.env.COOKIE_SECRET,
+    parseOptions: {}
+})
+
+app.get("/", async (_, reply) => {
+    return reply.redirect("/create-request");
 });
 
 

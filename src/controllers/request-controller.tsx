@@ -1,6 +1,7 @@
 import { route } from "#helpers/route";
 import { HttpContext } from "../types.js";
-import { CreateRequestPage } from "#views/pages/create-request";
+import { CreateHTTPRequestPage } from "#views/pages/create-http-request";
+import { EventSource } from "eventsource";
 
 interface CreateRequestBody {
     url: string;
@@ -13,20 +14,17 @@ interface CreateRequestBody {
 export default class RequestController {
 
     @route({ path: "/create-request", methods: ["GET", "POST"] })
-    async index({ request, reply }: HttpContext) {
+    async createHttpRequest({ request, reply }: HttpContext) {
         if (request.method === "POST") {
             let reqBody = null;
             let data = {} as { url: string | URL; method: string; headers: Headers | Record<string, string> };
 
             if (request.isMultipart()) {
-
                 let requestData = {};
                 let file = null;
-
                 reqBody = new FormData();
 
                 for await (const part of request.parts()) {
-                    console.log(part);
                     if (part.fieldname === "__api_tester__data") {
                         // @ts-ignore
                         data = JSON.parse(part.value);
@@ -55,6 +53,7 @@ export default class RequestController {
                 }
             } else {
                 const { url, method, headers, body } = JSON.parse(request.body as string) as CreateRequestBody;
+
                 data = { url, method, headers };
                 reqBody = body;
             }
@@ -62,7 +61,8 @@ export default class RequestController {
             const res = await fetch(data.url, {
                 method: data.method,
                 headers: data.headers,
-                body: reqBody
+                body: reqBody,
+                "credentials": "include",
             });
 
             for (const [key, value] of res.headers.entries()) {
@@ -78,13 +78,12 @@ export default class RequestController {
 
                 reply.header(key, value);
             }
-            reply.status(res.status);
-            return reply.send(await res.text());
+
+            return reply.status(res.status).send(await res.text());
         }
 
         return reply.html(
-            <CreateRequestPage />
+            <CreateHTTPRequestPage />
         );
     }
-
 }

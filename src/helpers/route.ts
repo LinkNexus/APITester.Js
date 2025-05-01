@@ -32,6 +32,14 @@ export async function registerRoutes(app: FastifyInstance) {
                             return await Controller.prototype[method]({ request, reply });
                         }
                     });
+
+                    app.route({
+                        method: httpMethod,
+                        url: prefix + path + "/",
+                        handler: async function (request, reply) {
+                            return await Controller.prototype[method]({ request, reply });
+                        }
+                    })
                 });
             }
         });

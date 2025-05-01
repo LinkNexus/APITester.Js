@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ResponseContent } from "./response-content";
-import { ResponseHeaders } from "./response-headers";
-import { ResponsePreview } from "./response-preview";
+import { ResponseContent } from "./response-content.js";
+import { ResponseHeaders } from "./response-headers.js";
+import { ResponsePreview } from "./response-preview.js";
 
 export function ResponseViewer({ response }: { response: Response }) {
     const [text, setText] = useState<string>("");

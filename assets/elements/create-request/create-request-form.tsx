@@ -1,9 +1,8 @@
 import { AbstractCustomElement } from "@/helpers/custom-elements";
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { CreateRequestTabs } from "@/components/create-request/create-request-tabs";
 import { getValuesFromEntry } from "@/helpers/dom";
-import { url } from "inspector";
-import { ResponseViewer } from "@/components/create-request/response-viewer";
+import { ResponseViewer } from "@/components/create-request/response-viewer/response-viewer";
 
 export default class CreateRequestForm extends AbstractCustomElement {
     private isFormDataRequest: boolean = false;
@@ -16,6 +15,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
     Element() {
         const [res, setRes] = useState<Response | null>(null);
         const [error, setError] = useState<string | null>(null);
+        const [requestType, setRequestType] = useState<"http" | "event-source">("http");
 
         const createRequest = async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -41,29 +41,32 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     className="max-w-full w-full flex flex-col gap-y-6 dropzone"
                 >
 
-                    <div className="w-full flex-wrap flex gap-[20px]">
-                        <div className="flex flex-col gap-y-2 w-full lg:w-[calc(50%-10px)]">
-                            <label htmlFor="url">URL</label>
-                            <input required={true} name="url" type="text" id="url" className="w-full"
-                                placeholder="https://example.com" />
-                        </div>
+                    <div className="w-full flex flex-col gap-[20px]">
+                        <div className="w-full flex flex-col md:flex-row gap-x-3">
+                            <div className="flex flex-col gap-y-2 w-full">
+                                <label htmlFor="url">URL</label>
+                                <input required={true} name="url" type="text" id="url" className="w-full"
+                                    placeholder="https://example.com" />
+                            </div>
 
-                        <div className="flex flex-col gap-y-2 w-full lg:w-[calc(50%-10px)]">
-                            <label htmlFor="method">Method</label>
-                            <select
-                                name="method"
-                                id="method"
-                                className="w-full p-2"
-                            >
-                                <option value="GET">GET</option>
-                                <option value="POST">POST</option>
-                                <option value="PUT">PUT</option>
-                                <option value="DELETE">DELETE</option>
-                            </select>
+                            {requestType === "http" && (
+                                <div className="flex flex-col gap-y-2 w-full">
+                                    <label htmlFor="method">Method</label>
+                                    <select
+                                        name="method"
+                                        id="method"
+                                        className="w-full p-2"
+                                    >
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>)}
                         </div>
                     </div>
 
-                    <CreateRequestTabs />
+                    <CreateRequestTabs requestType={requestType} />
 
                     <button type="submit" className="button-primary">Submit</button>
                 </form>
@@ -93,9 +96,13 @@ export default class CreateRequestForm extends AbstractCustomElement {
                 url: this.data.url
             }));
         }
-
         const body = this.data.body instanceof FormData ?
-            this.data.body : JSON.stringify(this.data.body);
+            this.data.body : JSON.stringify({
+                method: this.data.method,
+                url: this.data.url,
+                headers: this.data.headers,
+                body: this.data.body,
+            });
 
         return await fetch("/create-request", {
             method: "POST",
@@ -115,11 +122,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
     extractBody() {
         switch (this.formData["body-type"]) {
             case "no-body":
-                this.data.body = {
-                    url: this.data.url,
-                    method: this.data.method,
-                    headers: this.data.headers,
-                };
+                this.data.body = null;
                 break;
 
             case "form-url-encoded":
