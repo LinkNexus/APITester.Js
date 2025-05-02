@@ -21,7 +21,7 @@ export function fields(fields: Record<string, any>) {
             if (typeof value !== "function") {
                 throw new Error(`Field ${key} is not a valid type`);
             }
-
+            Reflect.defineMetadata("fields", fields, target);
             target.prototype[key] = value();
         }
     }

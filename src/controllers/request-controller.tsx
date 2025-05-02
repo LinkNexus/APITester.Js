@@ -1,9 +1,9 @@
 import { route } from "../routing/routes.js";
 import { HttpContext } from "../types.js";
-import { CreateHTTPRequestPage } from "#views/pages/create-http-request";
+import { HomePage } from "#views/pages/home";
 import Request from "../database/models/Request.js";
 import { EventSource } from "eventsource";
-import { METHODS } from "http";
+import { RequestHistoryPage } from "#views/pages/requests-history";
 
 interface CreateRequestBody {
     url: string;
@@ -14,102 +14,10 @@ interface CreateRequestBody {
 }
 
 export default class RequestController {
-    // @route({ path: "/", methods: ["GET", "POST"] })
-    // async test({ request, reply }: HttpContext) {
-    //     if (request.method === "POST") {
-    //         let reqBody = null;
-    //         let data = {} as { url: string | URL; method: string; headers: Headers | Record<string, string>, bodyType: string };
-    //         let isFileRequest = false;
-
-    //         if (request.isMultipart()) {
-    //             let requestData = {};
-    //             let file = null;
-    //             reqBody = new FormData();
-
-    //             for await (const part of request.parts()) {
-    //                 if (part.fieldname === "__api_tester__data") {
-    //                     // @ts-ignore
-    //                     data = JSON.parse(part.value);
-
-    //                 } else {
-    //                     if (part.type === "file") {
-    //                         file = part;
-    //                     } else {
-    //                         requestData[part.fieldname] = part.value;
-    //                     }
-    //                 }
-    //             }
-
-    //             if (file) {
-    //                 const chunks = [];
-    //                 for await (const chunk of file.file) {
-    //                     chunks.push(chunk);
-    //                 }
-    //                 const buffer = Buffer.concat(chunks);
-
-    //                 reqBody.append(file.fieldname, new Blob([buffer], { type: file.mimetype }), file.filename);
-    //                 isFileRequest = true;
-    //             } else {
-    //                 Object.entries(requestData).forEach(([key, value]) => {
-    //                     reqBody.append(key, value);
-    //                 });
-    //             }
-    //         } else {
-    //             const { url, method, headers, body, bodyType } = JSON.parse(request.body as string) as CreateRequestBody;
-    //             data = { url, method, headers, bodyType };
-    //             reqBody = body;
-    //         }
-
-    //         const res = await fetch(data.url, {
-    //             method: data.method,
-    //             headers: data.headers,
-    //             body: reqBody,
-    //             "credentials": "include",
-    //         });
-
-    //         for (const [key, value] of res.headers.entries()) {
-    //             if ([
-    //                 'transfer-encoding',
-    //                 'content-encoding',
-    //                 'content-length',
-    //                 'connection',
-    //                 'keep-alive',
-    //                 'date',
-    //                 'server'
-    //             ].includes(key.toLowerCase())) continue;
-
-    //             reply.header(key, value);
-    //         }
-
-    //         const resText = await res.text();
-    //         const resHeaders = Object.fromEntries(res.headers.entries());
-
-    //         const req = new Request();
-    //         req.bodyType = data.bodyType;
-    //         req.method = data.method;
-    //         req.url = data.url.toString();
-    //         req.headers = data.headers;
-    //         if (!isFileRequest) req.body = reqBody instanceof FormData ? Object.fromEntries(reqBody.entries()) : reqBody;
-    //         req.response = res;
-    //         req.response = {
-    //             text: resText,
-    //             headers: resHeaders,
-    //             status: res.status
-    //         }
-    //         Request.save(req);
-
-    //         return reply.status(res.status).send(resText);
-    //     }
-
-    //     return reply.html(
-    //         <CreateHTTPRequestPage />
-    //     );
-    // }
-
     @route({ path: "/" })
     createRequest({ reply }: HttpContext) {
         return reply.html(
-            <CreateHTTPRequestPage />
+            <HomePage />
         );
     }
 
@@ -246,6 +154,15 @@ export default class RequestController {
             response,
         });
         return reply.status(201).send("SSE request saved");
+    }
+
+    @route({ path: "/requests", methods: ["GET"] })
+    requestsList({ reply }: HttpContext) {
+        const requests = Request.findAll();
+
+        return reply.html(
+            <RequestHistoryPage requests={requests} />
+        )
     }
 
 }

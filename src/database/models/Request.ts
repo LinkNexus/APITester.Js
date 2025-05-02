@@ -10,11 +10,10 @@ import { AbstractModel } from "./AbstractModel.js";
     headers: Object,
     body: String,
     response: String,
-    submissionType: String,
-    createdAt: Date,
-    updatedAt: Date,
+    createdAt: String,
+    updatedAt: String,
     bodyType: String,
-    requestType: String
+    requestType: String,
 })
 export default class Request extends AbstractModel {
     declare id: number;
@@ -23,9 +22,8 @@ export default class Request extends AbstractModel {
     declare headers: object;
     declare body: string;
     declare response: object;
-    declare submissionType: string;
-    declare createdAt: Date;
-    declare updatdeAt: Date;
+    declare createdAt: string;
+    declare updatdeAt: string;
     declare bodyType: string;
     declare requestType: string;
 }

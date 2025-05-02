@@ -1,4 +1,4 @@
-import { Fragment, PropsWithChildren } from "@kitajs/html";
+import { PropsWithChildren } from "@kitajs/html";
 import { Assets } from "./fragments/assets.js";
 
 export function BaseLayout({ children, title }: PropsWithChildren<{ title?: string }>) {

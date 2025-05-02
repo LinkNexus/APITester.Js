@@ -8,6 +8,7 @@ import { registerRoutes } from './routing/routes.js';
 import fastifyMultipart from "@fastify/multipart";
 import FastifyCookie from '@fastify/cookie';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
+import Request from './database/models/Request.js';
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3333;
 const app = Fastify();
@@ -25,7 +26,6 @@ app.register(FastifyCookie, {
     parseOptions: {}
 })
 app.register(FastifySSEPlugin);
-
 
 // Register routes
 registerRoutes(app).then(() => {

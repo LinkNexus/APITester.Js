@@ -3,7 +3,6 @@ import { type FormEvent, useEffect, useState } from "react";
 import { CreateRequestTabs } from "@/components/create-request/create-request-tabs";
 import { getValuesFromEntry } from "@/helpers/dom";
 import { ResponseViewer } from "@/components/create-request/response-viewer/response-viewer";
-import { request } from "http";
 
 interface FormDataType {
     requestType: string;
@@ -21,7 +20,6 @@ export default class CreateRequestForm extends AbstractCustomElement {
     private headers: Headers = new Headers();
     private body: string | FormData | null = null;
     private url: URL | null = null;
-    private involvesFile: boolean = false;
     private eventSource: EventSource | null = null;
     private setEventSourceData: (data: string | null) => void = () => { };
 
@@ -147,28 +145,28 @@ export default class CreateRequestForm extends AbstractCustomElement {
 
             console.log("Fuck");
 
-            // if (this.formData?.bodyType === "form-data") {
-            //     (this.body as FormData).append("__api_tester__data", JSON.stringify({
-            //         headers: this.headers,
-            //         method: this.formData.method,
-            //         url: this.url,
-            //         bodyType: this.formData.bodyType,
-            //     }));
-            // }
+            if (this.formData?.bodyType === "form-data") {
+                (this.body as FormData).append("__api_tester__data", JSON.stringify({
+                    headers: this.headers,
+                    method: this.formData.method,
+                    url: this.url,
+                    bodyType: this.formData.bodyType,
+                }));
+            }
 
-            // const body = this.body instanceof FormData ?
-            //     this.body : JSON.stringify({
-            //         method: this.formData.method,
-            //         url: this.url,
-            //         headers: this.headers,
-            //         body: this.body,
-            //         bodyType: this.formData.bodyType,
-            //     });
+            const body = this.body instanceof FormData ?
+                this.body : JSON.stringify({
+                    method: this.formData.method,
+                    url: this.url,
+                    headers: this.headers,
+                    body: this.body,
+                    bodyType: this.formData.bodyType,
+                });
 
-            // return await fetch("/http-request/create", {
-            //     method: "POST",
-            //     body: body,
-            // });
+            return await fetch("/http-request/create", {
+                method: "POST",
+                body: body,
+            });
         }
 
         fetch("/sse/create", {
@@ -222,7 +220,6 @@ export default class CreateRequestForm extends AbstractCustomElement {
                 this.body = new FormData();
 
                 if (this.formData?.filesName) {
-                    this.involvesFile = true;
                     this.body.append(this.formData.filesName, this.formData.files!)
                 } else {
                     const formEntries = this.extractFormData();
