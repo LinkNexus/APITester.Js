@@ -1,27 +1,27 @@
 import type { FastifyInstance } from "fastify";
 import "reflect-metadata";
-import { listModules } from "./modules.js";
+import { listModules } from "#helpers/modules";
 
 interface RouteMetadata {
     path: string;
     methods?: string[];
 }
 
-export const route = ({ path, methods = ["GET"] }: RouteMetadata) => Reflect.metadata("route", { path, methods });
+export const route = ({ path, methods = ["GET"] }: RouteMetadata) => Reflect.metadata("routes", { path, methods });
 
 export async function registerRoutes(app: FastifyInstance) {
     const controllers = await listModules("./src/controllers");
 
     controllers.forEach((controller) => {
         const { default: Controller } = controller;
-        const globalMetaData = Reflect.getMetadata("route", Controller);
+        const globalMetaData = Reflect.getMetadata("routes", Controller);
         const prefix = globalMetaData?.path || "";
         const globalMethods = globalMetaData?.methods || [];
 
         const methods = Object.getOwnPropertyNames(Controller.prototype).filter(name => typeof Controller.prototype[name] === 'function' && name !== 'constructor');
         methods.forEach((method) => {
-            if (Reflect.hasMetadata("route", Controller.prototype, method)) {
-                const { path, methods: httpMethods }: RouteMetadata = Reflect.getMetadata("route", Controller.prototype, method);
+            if (Reflect.hasMetadata("routes", Controller.prototype, method)) {
+                const { path, methods: httpMethods }: RouteMetadata = Reflect.getMetadata("routes", Controller.prototype, method);
                 const httpMethodsSet = new Set([...globalMethods, ...httpMethods]);
 
                 httpMethodsSet.forEach((httpMethod) => {

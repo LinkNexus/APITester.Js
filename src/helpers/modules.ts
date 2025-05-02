@@ -3,8 +3,9 @@ import { join, relative } from "node:path";
 import { cwd } from "node:process";
 import { fileURLToPath } from "node:url";
 
-export async function listModules(path: string) {
-    let files = await listFiles(path);
+export async function listModules(path: string, options: { exclude?: string[] } = {}) {
+    let files = await listFiles(path, { exclude: options.exclude });
+
     files = files.map((file) => {
         if (file.endsWith(".ts") || file.endsWith(".tsx")) {
             file = file.replace(/\.tsx?$/, ".js");
@@ -30,7 +31,7 @@ export async function listModules(path: string) {
     return modules;
 }
 
-async function listFiles(path: string) {
+async function listFiles(path: string, options: { exclude?: string[] } = {}) {
     const res = await readdir(path, {
         withFileTypes: true
     });
@@ -40,8 +41,17 @@ async function listFiles(path: string) {
     for (const file of res) {
         if (file.isDirectory()) {
             const subFiles = await listFiles(`${path}/${file.name}`);
+
+            if (options.exclude && options.exclude.includes(`${path}/${file.name}`)) {
+                continue;
+            }
+
             files.push(...subFiles);
         } else {
+            if (options.exclude && options.exclude.includes(file.name)) {
+                continue;
+            }
+
             files.push(`${path}/${file.name}`);
         }
     }

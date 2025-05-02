@@ -4,9 +4,10 @@ import { fastifyKitaHtml } from "@kitajs/fastify-html-plugin";
 import fastifyFormbody from '@fastify/formbody';
 import path from 'node:path';
 import { cwd } from 'node:process';
-import { registerRoutes } from '#helpers/route';
+import { registerRoutes } from './routing/routes.js';
 import fastifyMultipart from "@fastify/multipart";
 import FastifyCookie from '@fastify/cookie';
+import { FastifySSEPlugin } from 'fastify-sse-v2';
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3333;
 const app = Fastify();
@@ -23,10 +24,7 @@ app.register(FastifyCookie, {
     secret: process.env.COOKIE_SECRET,
     parseOptions: {}
 })
-
-app.get("/", async (_, reply) => {
-    return reply.redirect("/create-request");
-});
+app.register(FastifySSEPlugin);
 
 
 // Register routes

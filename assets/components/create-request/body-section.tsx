@@ -6,18 +6,13 @@ import { AddQueryButton } from "@/components/create-request/add-query-button";
 export function BodySection() {
     const [selection, setSelection] = useState("no-body");
     const [code, setCode] = useState("");
-    const [isAjax, setIsAjax] = useState(false);
     const [isFile, setIsFile] = useState(false);
     const formDataRef = useRef<HTMLDivElement>(null);
     let queriesNumber = 0;
 
     useEffect(() => {
-        if (isAjax) {
-            setIsFile(window.prompt("Is this a file? (yes/no)")?.toLowerCase() === "yes");
-        } else {
-            setIsFile(false);
-        }
-    }, [isAjax]);
+        if (selection === "form-data") setIsFile(window.prompt("Is this a file? (yes/no)")?.toLowerCase() === "yes");
+    }, [selection]);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setSelection(e.target.value);
@@ -34,7 +29,7 @@ export function BodySection() {
         <div id="body-section" className="p-5 flex flex-col gap-y-4">
             <div className="flex flex-col gap-y-2 max-w-full w-full">
                 <label htmlFor="body-type">Body-Type</label>
-                <select value={selection} onChange={handleChange} name="body-type" id="body-type"
+                <select value={selection} onChange={handleChange} name="bodyType" id="body-type"
                     className="w-full p-2">
                     <option value="no-body">No Body</option>
                     <option value="form-url-encoded">Form URL Encoded</option>
@@ -48,6 +43,7 @@ export function BodySection() {
 
             {(selection === "json" || selection === "html" || selection === "xml") && (
                 <Editor
+                    name="body"
                     className="simple-editor min-h-50 field-sizing-content"
                     highlight={(code) => hljs.highlight(code, { language: selection }).value}
                     onValueChange={setCode}
@@ -57,6 +53,7 @@ export function BodySection() {
 
             {selection === "text" && (
                 <Editor
+                    name="body"
                     className="simple-editor min-h-50 field-sizing-content"
                     highlight={code => code}
                     onValueChange={setCode}
@@ -66,9 +63,9 @@ export function BodySection() {
 
             {selection === "form-data" && (
                 <>
-                    <SubmissionTypeSelector onChange={(e) => setIsAjax(e.target.value === "ajax")} />
                     <div id="form-data-container" ref={formDataRef} className="flex flex-col gap-y-4 mb-2"></div>
                     {isFile ? (
+                        // @ts-ignore
                         <query-entry is-file="true" title="Form Data File"></query-entry>
                     ) : (
                         <button onClick={addQueryEntry} type="button" className="w-fit button-secondary gap-x-2">
@@ -86,7 +83,6 @@ export function BodySection() {
 
             {selection === "form-url-encoded" && (
                 <>
-                    <SubmissionTypeSelector />
                     <div id="form-data-container" ref={formDataRef} className="flex flex-col gap-y-4 mb-2"></div>
                     <AddQueryButton containerRef={formDataRef} queryTitle={"Form Entry No"}>
                         Add Form Entry
@@ -95,13 +91,4 @@ export function BodySection() {
             )}
         </div>
     )
-}
-
-function SubmissionTypeSelector({ onChange }: { onChange?: (e: ChangeEvent<HTMLSelectElement>) => void }) {
-    return (
-        <select onChange={onChange} name="submission-type" className="mb-4">
-            <option value="direct">Direct Form Submission</option>
-            <option value="ajax">AJAX</option>
-        </select>
-    );
 }

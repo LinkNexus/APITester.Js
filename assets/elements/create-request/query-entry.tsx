@@ -1,7 +1,6 @@
 import { AbstractCustomElement } from "@/helpers/custom-elements";
 import { ReactNode, useId } from "react";
 import { FileUploader } from "react-drag-drop-files";
-import { isFloat32Array } from "util/types";
 
 export default class QueryEntry extends AbstractCustomElement {
     Element({ title, isFile }: { id: number, title: string, isFile: string }): ReactNode {
@@ -13,7 +12,7 @@ export default class QueryEntry extends AbstractCustomElement {
                 <div className="w-full">
                     <span className="font-semibold">{title}</span>
                     <div className="w-full mt-3 flex flex-col md:flex-row gap-x-3 gap-y-4">
-                        <input name={isFile ? "files-name" : id} defaultValue="hello" placeholder="name" type="text" className="w-full h-10" />
+                        <input name={isFile ? "filesName" : id} defaultValue="hello" placeholder="name" type="text" className="w-full h-10" />
                         {isFile === "true" ? (
                             <FileUploader
                                 name="files"

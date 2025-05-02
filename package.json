@@ -4,7 +4,8 @@
   "scripts": {
     "server": "tsx watch --env-file=.env src/index.tsx",
     "client": "vite dev",
-    "build": "vite build"
+    "build": "vite build",
+    "migrations": "tsx --env-file=.env src/database/migrations/migrations.ts"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.25.9",
@@ -22,6 +23,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "eventsource": "^3.0.6",
     "fastify": "^5.3.2",
+    "fastify-sse-v2": "^4.2.1",
     "highlight.js": "^11.11.1",
     "json-formatter-js": "^2.5.23",
     "react": "^19.1.0",
