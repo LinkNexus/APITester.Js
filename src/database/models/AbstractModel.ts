@@ -11,6 +11,7 @@ export abstract class AbstractModel {
         const instance = new this();
 
         for (const [key, value] of Object.entries(props)) {
+            console.log(data[key]);
             if (typeof (value as any)() === "object") {
                 instance[key] = JSON.parse(data[key]);
             } else {
@@ -30,7 +31,7 @@ export abstract class AbstractModel {
         });
     }
 
-    static find(id: number | string) {
+    static find(id: number | string | bigint) {
         const tableName = this.constructor["tableName"];
         const query = `SELECT * FROM ${tableName} WHERE id = ?`;
         const entry = this.connection.prepare(query).get(id);
@@ -48,6 +49,34 @@ export abstract class AbstractModel {
             return `'${String(value).replace(/'/g, "''")}'`;
         }).join(", ");
         const query = `INSERT INTO ${tableName} (${fields}) VALUES (${values})`;
-        this.connection.prepare(query).run();
+        const statement = this.connection.prepare(query).run();
+        return this.find(statement.lastInsertRowid);
+    }
+
+    static saveOrCreate(data: any) {
+        const tableName = this.constructor["tableName"];
+        const fields = Object.keys(data).join(", ");
+        const values = Object.values(data).map((value) => {
+            if (typeof value === "object") {
+                return `'${JSON.stringify(value).replace(/'/g, "''")}'`;
+            }
+            return `'${String(value).replace(/'/g, "''")}'`;
+        }).join(", ");
+        const query = `INSERT OR REPLACE INTO ${tableName} (${fields}) VALUES (${values})`;
+        const statement = this.connection.prepare(query).run();
+        return this.find(statement.lastInsertRowid);
+    }
+
+    static update(data: any) {
+        const tableName = this.constructor["tableName"];
+        const fields = Object.keys(data).map((key) => {
+            if (typeof data[key] === "object") {
+                return `${key} = '${JSON.stringify(data[key]).replace(/'/g, "''")}'`;
+            }
+            return `${key} = '${String(data[key]).replace(/'/g, "''")}'`;
+        }).join(", ");
+        const query = `UPDATE ${tableName} SET ${fields} WHERE id = ?`;
+        this.connection.prepare(query).run(data.id);
+        return this.find(data.id);
     }
 }

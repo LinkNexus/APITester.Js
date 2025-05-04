@@ -23,6 +23,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
     private url: URL | null = null;
     private eventSource: EventSource | null = null;
     private setEventSourceData: (data: string | null) => void = () => { };
+    private request: Request | null = null;
 
     Element({ request }: { request?: string }) {
         const [res, setRes] = useState<Response | null>(null);
@@ -36,6 +37,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
 
         useEffect(() => {
             this.setEventSourceData = setEventSourceData;
+            this.request = parsedRequest;
         }, []);
 
         useEffect(() => {
@@ -47,6 +49,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                         url: this.url,
                         headers: this.headers,
                         response: eventSourceData,
+                        requestId: this.request?.id,
                     }),
                 })
             }
@@ -103,6 +106,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                                     name="method"
                                     id="method"
                                     className="w-full p-2"
+                                    defaultValue={parsedRequest?.method || "GET"}
                                 >
                                     <option value="GET">GET</option>
                                     <option value="POST">POST</option>
@@ -155,6 +159,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     method: this.formData.method,
                     url: this.url,
                     bodyType: this.formData.bodyType,
+                    requestId: this.request?.id,
                 }));
             }
 
@@ -165,6 +170,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     headers: this.headers,
                     body: this.body,
                     bodyType: this.formData.bodyType,
+                    requestId: this.request?.id,
                 });
 
             return await fetch("/http-request/create", {
@@ -217,7 +223,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
 
             case "form-url-encoded":
                 this.body = new URLSearchParams(this.extractFormData()).toString();
-                this.headers.append("Content-Type", "application/x-www-form-urlencoded");
+                this.headers["Content-Type"] = "application/x-www-form-urlencoded";
                 break;
 
             case "form-data":
@@ -243,6 +249,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
     extractFormData() {
         const formEntries: Record<string, any> = {};
         const $formDataEntries = this.$form!.querySelectorAll("#body-section query-entry");
+        console.log($formDataEntries);
         $formDataEntries?.forEach(($entry) => {
             const formEntryData = getValuesFromEntry($entry);
             if (formEntryData) formEntries[formEntryData.name] = formEntryData.value;

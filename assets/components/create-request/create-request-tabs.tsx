@@ -19,7 +19,7 @@ export function CreateRequestTabs({ request, requestType }: { request: Request |
             <div data-tabs-container={true}>
                 <QueryParameterSection url={request?.url} />
                 <BodySection request={request} />
-                <HeadersSection />
+                <HeadersSection request={request} />
             </div>
         </div>
     )

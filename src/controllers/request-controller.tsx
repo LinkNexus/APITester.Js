@@ -12,6 +12,7 @@ interface CreateRequestBody {
     headers: Headers;
     body: string | FormData | null;
     bodyType: string;
+    requestId: string;
 }
 
 export default class RequestController {
@@ -24,7 +25,7 @@ export default class RequestController {
 
     @route({ path: "/http-request/create", methods: ["POST"] })
     async createHttpRequest({ request, reply }: HttpContext) {
-        let data = {} as { url: string | URL; method: string; headers: Headers | Record<string, string>, bodyType: string };
+        let data = {} as Omit<CreateRequestBody, "body">;
         let requestBody = null;
 
         if (request.isMultipart()) {
@@ -42,8 +43,8 @@ export default class RequestController {
                 }
             }
         } else {
-            const { url, method, headers, body, bodyType } = JSON.parse(request.body as string) as CreateRequestBody;
-            data = { url, method, headers, bodyType };
+            const { url, method, headers, body, bodyType, requestId } = JSON.parse(request.body as string) as CreateRequestBody;
+            data = { url, method, headers, bodyType, requestId };
             requestBody = body;
         }
 
@@ -83,6 +84,7 @@ export default class RequestController {
                 status: res.status
             },
             requestType: "http",
+            id: data.requestId,
         })
 
         return reply.status(res.status).send(resText);
@@ -106,7 +108,13 @@ export default class RequestController {
         req.response = request.response;
         req.requestType = request.requestType;
         req.bodyType = request.bodyType;
-        Request.save(req);
+        req.id = request.id;
+
+        if (request.id) {
+            req.updatedAt = (new Date()).toISOString();
+        }
+
+        Request.saveOrCreate(req);
     }
 
     @route({ path: "/sse/create", methods: ["POST"] })

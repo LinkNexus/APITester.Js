@@ -3,10 +3,11 @@ import { ComponentProps, PropsWithChildren, RefObject } from "react";
 type Props = ComponentProps<"button"> & {
     containerRef: RefObject<HTMLDivElement | null>;
     queryTitle: string;
+    index?: number;
 }
 
-export function AddQueryButton({ containerRef, children, queryTitle, className, ...props }: PropsWithChildren<Props>) {
-    let queryQty = 0;
+export function AddQueryButton({ index = 0, containerRef, children, queryTitle, className, ...props }: PropsWithChildren<Props>) {
+    let queryQty = index;
 
     const appendEntry = () => {
         queryQty++;

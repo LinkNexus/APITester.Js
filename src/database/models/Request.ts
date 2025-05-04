@@ -23,7 +23,7 @@ export default class Request extends AbstractModel {
     declare body: string;
     declare response: { text: string; headers?: object; status?: number };
     declare createdAt: string;
-    declare updatdeAt: string;
+    declare updatedAt: string;
     declare bodyType: string;
     declare requestType: "http" | "event-source";
 }
