@@ -10,6 +10,7 @@ declare global {
         interface IntrinsicElements {
             ["app-header"]: HtmlTag;
             ["create-request-form"]: HtmlTag & { request?: string };
+            ["grouped-requests"]: HtmlTag & { requests: string };
         }
     }
 }
