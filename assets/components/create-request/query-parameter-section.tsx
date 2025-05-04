@@ -11,7 +11,7 @@ export function QueryParameterSection({ url }: { url?: string }) {
             <div ref={queryEntriesRef} className="flex flex-col gap-y-4 mb-4">
                 {urlObj?.searchParams && Array.from(urlObj.searchParams.entries()).map(([key, value], index) => (
                     // @ts-ignore
-                    <query-entry title={`Query Param No ${index}`} key={`query-param-${key}`} key-val={key} value={value}></query-entry>
+                    <query-entry title={`Query Param No ${index + 1}`} key={`query-param-${key}`} key-val={key} value={value}></query-entry>
                 ))}
             </div>
 
