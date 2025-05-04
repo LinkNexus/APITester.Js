@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import {cwd} from "node:process";
+import { cwd } from "node:process";
 import path from "node:path";
 
 const { PORT, VITE_PORT } = process.env;
@@ -30,6 +30,7 @@ export default defineConfig({
         },
         assetsDir: ".",
         manifest: true,
+        target: "esnext",
     },
     resolve: {
         alias: {

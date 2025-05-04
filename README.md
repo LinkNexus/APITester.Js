@@ -23,6 +23,8 @@ COOKIE_SECRET=
 
 7. Run the app with `npm run server`
 
+Note: There is a docker integration of the app for Docker fanatics, but it is note that requests to localhost and other local domains will not be effective because of Docker closed nature, since requests are done by NodeJS and not the browser. You just need to add a `compose.override.yaml` to match your environment.
+
 ## Features
 
 - Very simple and easy to use, just one form to fill to create the request

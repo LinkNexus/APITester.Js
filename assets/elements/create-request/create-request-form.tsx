@@ -3,6 +3,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { CreateRequestTabs } from "@/components/create-request/create-request-tabs";
 import { getValuesFromEntry } from "@/helpers/dom";
 import { ResponseViewer } from "@/components/create-request/response-viewer/response-viewer";
+import type Request from "#models/Request"
 
 interface FormDataType {
     requestType: string;
@@ -17,24 +18,28 @@ interface FormDataType {
 export default class CreateRequestForm extends AbstractCustomElement {
     private $form: HTMLFormElement | null = null;
     private formData: FormDataType | null = null;
-    private headers: Headers = new Headers();
+    private headers: Record<string, string> = {};
     private body: string | FormData | null = null;
     private url: URL | null = null;
     private eventSource: EventSource | null = null;
     private setEventSourceData: (data: string | null) => void = () => { };
 
-    Element() {
+    Element({ request }: { request?: string }) {
         const [res, setRes] = useState<Response | null>(null);
         const [error, setError] = useState<string | null>(null);
-        const [requestType, setRequestType] = useState<"http" | "event-source">("http");
-        const [eventSourceData, setEventSourceData] = useState<string | null>(null);
+        const parsedRequest = request ? JSON.parse(request) as Request : null;
+        const [requestType, setRequestType] = useState<"http" | "event-source">(parsedRequest?.requestType || "http");
+        const [eventSourceData, setEventSourceData] = useState<string | null>(parsedRequest?.requestType === "event-source" ? parsedRequest.response.text : null);
+        const [isSubmitted, setIsSubmitted] = useState(false);
+
+        const url = parsedRequest?.url ? new URL(parsedRequest.url) : null;
 
         useEffect(() => {
             this.setEventSourceData = setEventSourceData;
         }, []);
 
         useEffect(() => {
-            if (eventSourceData) {
+            if (eventSourceData && isSubmitted) {
                 this.eventSource?.close();
                 fetch("/sse/save", {
                     method: "POST",
@@ -45,11 +50,12 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     }),
                 })
             }
-        }, [eventSourceData])
+        }, [eventSourceData, isSubmitted])
 
         const createRequest = async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             setError(null);
+            setIsSubmitted(true);
 
             try {
                 setRes(await this.executeRequest(e));
@@ -86,7 +92,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                         <div className="w-full flex flex-col md:flex-row gap-x-3">
                             <div className="flex flex-col gap-y-2 w-full">
                                 <label htmlFor="url">URL</label>
-                                <input required={true} name="url" type="text" id="url" className="w-full"
+                                <input defaultValue={url ? `${url.protocol}//${url.hostname}${url.pathname}` : ""} required={true} name="url" type="text" id="url" className="w-full"
                                     placeholder="https://example.com" />
                             </div>
 
@@ -108,13 +114,13 @@ export default class CreateRequestForm extends AbstractCustomElement {
                         </div>
                     </div>
 
-                    <CreateRequestTabs requestType={requestType} />
+                    <CreateRequestTabs request={parsedRequest} requestType={requestType} />
 
                     <button type="submit" className="button-primary">Submit</button>
                 </form>
 
                 {res && (
-                    <ResponseViewer response={res} />
+                    <ResponseViewer request={parsedRequest} response={res} />
                 )}
 
                 {eventSourceData && (
@@ -142,8 +148,6 @@ export default class CreateRequestForm extends AbstractCustomElement {
 
         if (this.formData?.requestType === "http") {
             this.extractBody();
-
-            console.log("Fuck");
 
             if (this.formData?.bodyType === "form-data") {
                 (this.body as FormData).append("__api_tester__data", JSON.stringify({
@@ -199,9 +203,9 @@ export default class CreateRequestForm extends AbstractCustomElement {
     appendHeaders() {
         const $headerEntries = this.$form!.querySelectorAll("#headers-section query-entry");
         $headerEntries.forEach(($entry) => {
+            console.log($entry);
             const entry = getValuesFromEntry($entry);
-
-            if (entry) this.headers.append(entry.name, entry.value);
+            if (entry) this.headers[entry.name] = entry.value;
         })
     }
 

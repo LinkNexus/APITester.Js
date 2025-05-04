@@ -1,11 +1,61 @@
 {
+  "_jsx-runtime-D_zvdyIk.js": {
+    "file": "jsx-runtime-D_zvdyIk.js",
+    "name": "jsx-runtime"
+  },
   "app.ts": {
-    "file": "app-Deq_UwfS.js",
+    "file": "app-DIxFj9-9.js",
     "name": "app",
     "src": "app.ts",
     "isEntry": true,
+    "dynamicImports": [
+      "elements/alert-message.tsx",
+      "elements/app-header.tsx",
+      "elements/create-request/create-request-form.tsx",
+      "elements/create-request/query-entry.tsx"
+    ],
     "css": [
-      "app-CrOMsDa_.css"
+      "app-H1nE4BNY.css"
+    ]
+  },
+  "elements/alert-message.tsx": {
+    "file": "alert-message-dV4-9rx-.js",
+    "name": "alert-message",
+    "src": "elements/alert-message.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "app.ts"
+    ]
+  },
+  "elements/app-header.tsx": {
+    "file": "app-header-COuR5HIB.js",
+    "name": "app-header",
+    "src": "elements/app-header.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "app.ts"
+    ]
+  },
+  "elements/create-request/create-request-form.tsx": {
+    "file": "create-request-form-BZ8XYT7x.js",
+    "name": "create-request-form",
+    "src": "elements/create-request/create-request-form.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "app.ts"
+    ]
+  },
+  "elements/create-request/query-entry.tsx": {
+    "file": "query-entry-C3FoMJKv.js",
+    "name": "query-entry",
+    "src": "elements/create-request/query-entry.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "app.ts"
     ]
   }
 }

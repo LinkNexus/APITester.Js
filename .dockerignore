@@ -1,5 +1,4 @@
 node_modules/
-.env
-database.db
-.idea/
+Dockerfile
+compose.yaml
 compose.override.yaml

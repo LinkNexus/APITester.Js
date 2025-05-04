@@ -42,6 +42,7 @@
   },
   "imports": {
     "#views/*": "./views/*.tsx",
-    "#helpers/*": "./src/helpers/*.ts"
+    "#helpers/*": "./src/helpers/*.ts",
+    "#models/*": "./src/database/models/*.ts"
   }
 }

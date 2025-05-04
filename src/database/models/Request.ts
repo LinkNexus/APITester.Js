@@ -9,7 +9,7 @@ import { AbstractModel } from "./AbstractModel.js";
     url: String,
     headers: Object,
     body: String,
-    response: String,
+    response: Object,
     createdAt: String,
     updatedAt: String,
     bodyType: String,
@@ -21,9 +21,9 @@ export default class Request extends AbstractModel {
     declare url: string;
     declare headers: object;
     declare body: string;
-    declare response: object;
+    declare response: { text: string; headers?: object; status?: number };
     declare createdAt: string;
     declare updatdeAt: string;
     declare bodyType: string;
-    declare requestType: string;
+    declare requestType: "http" | "event-source";
 }

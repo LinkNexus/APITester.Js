@@ -9,7 +9,7 @@ declare global {
     namespace JSX {
         interface IntrinsicElements {
             ["app-header"]: HtmlTag;
-            ["create-request-form"]: HtmlTag;
+            ["create-request-form"]: HtmlTag & { request?: string };
         }
     }
 }

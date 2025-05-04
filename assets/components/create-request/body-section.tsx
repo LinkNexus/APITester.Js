@@ -2,9 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Editor from "react-simple-code-editor";
 import hljs from "highlight.js";
 import { AddQueryButton } from "@/components/create-request/add-query-button";
+import type Request from "#models/Request";
 
-export function BodySection() {
-    const [selection, setSelection] = useState("no-body");
+export function BodySection({ request }: { request: Request | null }) {
+    const [selection, setSelection] = useState(request?.bodyType || "no-body");
     const [code, setCode] = useState("");
     const [isFile, setIsFile] = useState(false);
     const formDataRef = useRef<HTMLDivElement>(null);

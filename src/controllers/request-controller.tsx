@@ -4,6 +4,7 @@ import { HomePage } from "#views/pages/home";
 import Request from "../database/models/Request.js";
 import { EventSource } from "eventsource";
 import { RequestHistoryPage } from "#views/pages/requests-history";
+import { RequestPage } from "#views/pages/request";
 
 interface CreateRequestBody {
     url: string;
@@ -151,7 +152,9 @@ export default class RequestController {
             headers,
             bodyType: "no-body",
             requestType: "event-source",
-            response,
+            response: {
+                text: response,
+            },
         });
         return reply.status(201).send("SSE request saved");
     }
@@ -162,6 +165,19 @@ export default class RequestController {
 
         return reply.html(
             <RequestHistoryPage requests={requests} />
+        )
+    }
+
+    @route({ path: "/requests/:id", methods: ["GET"] })
+    async getRequest({ request, reply }: HttpContext) {
+        const req = Request.find((request.params as { id: string }).id);
+
+        if (!req) {
+            return reply.status(404).send("Request not found");
+        }
+
+        return reply.html(
+            <RequestPage request={req} />
         )
     }
 

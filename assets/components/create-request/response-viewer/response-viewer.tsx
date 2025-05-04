@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { ResponseContent } from "./response-content.js";
 import { ResponseHeaders } from "./response-headers.js";
 import { ResponsePreview } from "./response-preview.js";
+import type Request from "#models/Request";
 
-export function ResponseViewer({ response }: { response: Response }) {
+export function ResponseViewer({ request, response }: { request: Request | null, response: Response }) {
     const [text, setText] = useState<string>("");
     const headers = response.headers;
     const contentType = headers.get("Content-Type") || "text/plain";

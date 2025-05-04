@@ -2,9 +2,10 @@ import { QueryParameterSection } from "@/components/create-request/query-paramet
 import { BodySection } from "@/components/create-request/body-section";
 import { HeadersSection } from "@/components/create-request/headers-section";
 import { useEffect, useRef } from "react";
+import type Request from "#models/Request";
 
 
-export function CreateRequestTabs({ requestType }: { requestType: "http" | "event-source" }) {
+export function CreateRequestTabs({ request, requestType }: { request: Request | null, requestType: "http" | "event-source" }) {
     const bodySectionRef = useRef<HTMLDivElement | null>(null);
 
     return (
@@ -16,8 +17,8 @@ export function CreateRequestTabs({ requestType }: { requestType: "http" | "even
             </div>
 
             <div data-tabs-container={true}>
-                <QueryParameterSection />
-                <BodySection />
+                <QueryParameterSection url={request?.url} />
+                <BodySection request={request} />
                 <HeadersSection />
             </div>
         </div>

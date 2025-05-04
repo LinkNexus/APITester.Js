@@ -29,7 +29,7 @@ app.register(FastifySSEPlugin);
 
 // Register routes
 registerRoutes(app).then(() => {
-    app.listen({ port: port }, (err, address) => {
+    app.listen({ port: port, host: "0.0.0.0" }, (err, address) => {
         if (err) {
             app.log.error(err);
             process.exit(1);

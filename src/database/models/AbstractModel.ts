@@ -43,9 +43,9 @@ export abstract class AbstractModel {
         const fields = Object.keys(data).join(", ");
         const values = Object.values(data).map((value) => {
             if (typeof value === "object") {
-                return `'${JSON.stringify(value)}'`;
+                return `'${JSON.stringify(value).replace(/'/g, "''")}'`;
             }
-            return `'${value}'`
+            return `'${String(value).replace(/'/g, "''")}'`;
         }).join(", ");
         const query = `INSERT INTO ${tableName} (${fields}) VALUES (${values})`;
         this.connection.prepare(query).run();
