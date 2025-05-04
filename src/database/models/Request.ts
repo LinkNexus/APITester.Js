@@ -1,6 +1,7 @@
 import { request } from "http";
 import { fields, table } from "../connection.js";
 import { AbstractModel } from "./AbstractModel.js";
+import { formatDateToDay } from "#helpers/utils";
 
 @table("requests")
 @fields({
@@ -26,4 +27,15 @@ export default class Request extends AbstractModel {
     declare updatedAt: string;
     declare bodyType: string;
     declare requestType: "http" | "event-source";
+
+    static findAllGroupedByDate() {
+        return this.findAll().reduce((groups, item) => {
+            const dateKey = formatDateToDay(new Date(item.createdAt));
+            if (!groups[dateKey]) {
+                groups[dateKey] = [];
+            }
+            groups[dateKey].push(item);
+            return groups;
+        }, {} as Record<string, typeof Request[]>);
+    }
 }

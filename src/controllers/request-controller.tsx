@@ -108,10 +108,8 @@ export default class RequestController {
         req.response = request.response;
         req.requestType = request.requestType;
         req.bodyType = request.bodyType;
-        req.id = request.id;
-
         if (request.id) {
-            req.updatedAt = (new Date()).toISOString();
+            req.id = request.id;
         }
 
         Request.saveOrCreate(req);
@@ -169,10 +167,12 @@ export default class RequestController {
 
     @route({ path: "/requests", methods: ["GET"] })
     requestsList({ reply }: HttpContext) {
-        const requests = Request.findAll();
+        const requests = Request.findAllGroupedByDate();
+
+        console.log(Request.findAllGroupedByDate());
 
         return reply.html(
-            <RequestHistoryPage requests={requests} />
+            <RequestHistoryPage groupedRequests={requests} />
         )
     }
 

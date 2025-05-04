@@ -5,9 +5,18 @@ import fs from "node:fs";
 const [node, _, flag, migrationId] = process.argv;
 const action = flag?.replace(/^-+/, "");
 
+const databasePath = process.env.DATABASE_URL || "./database.db";
+
 if (action === "create") {
     createMigration();
 } else {
+    fs.open(databasePath, 'wx', (err, fd) => {
+        if (err) return;
+        fs.close(fd, (err) => {
+            if (err) throw err;
+        });
+    });
+
     runMigration(migrationId);
 }
 

@@ -22,7 +22,7 @@ app.register(FastifyStatic, {
 app.register(fastifyFormbody);
 app.register(fastifyMultipart);
 app.register(FastifyCookie, {
-    secret: process.env.COOKIE_SECRET,
+    secret: process.env.COOKIE_SECRET || "your_cookie-secret",
     parseOptions: {}
 })
 app.register(FastifySSEPlugin);

@@ -8,20 +8,13 @@ A [NodeJs](https://nodejs.org/)-based tool permitting to rapidly do requests to 
 
 2. Install all dependencies by using `npm install`
 
-3. Create an .env file at the root of your project and set these necessary variables:  
-`
-DATABASE_URL= (defaults to ./database.db)
-PORT= (defaults to 3333)
-COOKIE_SECRET=
-`
+3. Rename the .env.example file into .env and modify the given variables to your convinience.
 
-4. Create the sqlite database file as specified in the .env file.
+4. Run all the migrations using `npm run migrations`
 
-5. Run all the migrations using `npm run migrations`
+5. Build the assets using `npm run build`
 
-6. Build the assets using `npm run build`
-
-7. Run the app with `npm run server`
+6. Run the app with `npm run server`
 
 Note: There is a docker integration of the app for Docker fanatics, but it is note that requests to localhost and other local domains will not be effective because of Docker closed nature, since requests are done by NodeJS and not the browser. You just need to add a `compose.override.yaml` to match your environment.
 
