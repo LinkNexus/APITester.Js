@@ -2,7 +2,6 @@ import type Request from "#models/Request";
 import { BaseLayout } from "#views/layout";
 
 export function RequestPage({ request }: { request: Request }) {
-    console.log(request);
     return (
         <BaseLayout>
             <main class="flex items-center justify-center w-full">

@@ -26,9 +26,9 @@ export default class CreateRequestForm extends AbstractCustomElement {
     private request: Request | null = null;
 
     Element({ request }: { request?: string }) {
-        const [res, setRes] = useState<Response | null>(null);
-        const [error, setError] = useState<string | null>(null);
         const parsedRequest = request ? JSON.parse(request) as Request : null;
+        const [res, setRes] = useState<Response | Request["response"] | null>(parsedRequest?.response || null);
+        const [error, setError] = useState<string | null>(null);
         const [requestType, setRequestType] = useState<"http" | "event-source">(parsedRequest?.requestType || "http");
         const [eventSourceData, setEventSourceData] = useState<string | null>(parsedRequest?.requestType === "event-source" ? parsedRequest.response.text : null);
         const [isSubmitted, setIsSubmitted] = useState(false);

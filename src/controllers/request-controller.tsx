@@ -166,10 +166,8 @@ export default class RequestController {
     }
 
     @route({ path: "/requests", methods: ["GET"] })
-    requestsList({ reply }: HttpContext) {
+    listRequests({ reply }: HttpContext) {
         const requests = Request.findAllGroupedByDate();
-
-        console.log(Request.findAllGroupedByDate());
 
         return reply.html(
             <RequestHistoryPage groupedRequests={requests} />
@@ -177,7 +175,7 @@ export default class RequestController {
     }
 
     @route({ path: "/requests/:id", methods: ["GET"] })
-    async getRequest({ request, reply }: HttpContext) {
+    async showRequest({ request, reply }: HttpContext) {
         const req = Request.find((request.params as { id: string }).id);
 
         if (!req) {
@@ -187,6 +185,18 @@ export default class RequestController {
         return reply.html(
             <RequestPage request={req} />
         )
+    }
+
+    @route({ path: "/requests/:id", methods: ["DELETE"] })
+    deleteRequest({ request, reply }: HttpContext) {
+        const params = request.params as { id: string };
+        const req = Request.find(params.id);
+        if (req) {
+            Request.delete(params.id);
+            return reply.status(204).send("Request deleted");
+        } else {
+            return reply.status(404).send("Request not found");
+        }
     }
 
 }

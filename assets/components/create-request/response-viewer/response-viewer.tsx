@@ -4,24 +4,33 @@ import { ResponseHeaders } from "./response-headers.js";
 import { ResponsePreview } from "./response-preview.js";
 import type Request from "#models/Request";
 
-export function ResponseViewer({ request, response }: { request: Request | null, response: Response }) {
+export function ResponseViewer({ request, response }: { request: Request | null, response: Response | Request["response"] }) {
     const [text, setText] = useState<string>("");
-    const headers = response.headers;
+    const headers = response.headers instanceof Headers
+        ? response.headers
+        // @ts-ignore
+        : new Headers(response.headers);
     const contentType = headers.get("Content-Type") || "text/plain";
 
-    useEffect(() => {
-        response.text().then((text) => {
-            if (contentType.includes("json")) {
-                try {
-                    const json = JSON.parse(text);
-                    setText(JSON.stringify(json, null, 2));
-                } catch (e) {
-                    setText(text);
-                }
-            } else {
+    function setTextFromRes(text: string) {
+        if (contentType.includes("json")) {
+            try {
+                const json = JSON.parse(text);
+                setText(JSON.stringify(json, null, 2));
+            } catch (e) {
                 setText(text);
             }
-        });
+        } else {
+            setText(text);
+        }
+    }
+
+    useEffect(() => {
+        if (typeof response.text === "function") {
+            response.text().then(setTextFromRes);
+        } else {
+            setTextFromRes(response.text);
+        }
     }, [response]);
 
     return (
@@ -40,7 +49,7 @@ export function ResponseViewer({ request, response }: { request: Request | null,
                 <div className="text-muted text-center mt-8 mb-5">Status Code: <strong className="font-extrabold">{response.status}</strong></div>
 
                 <div data-tabs-container={true} className="p-5">
-                    <ResponseHeaders headers={response.headers} />
+                    <ResponseHeaders headers={headers} />
                     <ResponseContent text={text} />
                     <ResponsePreview contentType={contentType} text={text} />
                 </div>

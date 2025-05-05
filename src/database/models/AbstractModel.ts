@@ -11,11 +11,10 @@ export abstract class AbstractModel {
         const instance = new this();
 
         for (const [key, value] of Object.entries(props)) {
-            console.log(data[key]);
             if (typeof (value as any)() === "object") {
                 instance[key] = JSON.parse(data[key]);
             } else {
-                instance[key] = data[key];
+                instance[key] = (value as any)(data[key]);
             }
         }
 
@@ -78,5 +77,11 @@ export abstract class AbstractModel {
         const query = `UPDATE ${tableName} SET ${fields} WHERE id = ?`;
         this.connection.prepare(query).run(data.id);
         return this.find(data.id);
+    }
+
+    static delete(id: number | string | bigint) {
+        const tableName = this.constructor["tableName"];
+        const query = `DELETE FROM ${tableName} WHERE id = ?`;
+        this.connection.prepare(query).run(id);
     }
 }
