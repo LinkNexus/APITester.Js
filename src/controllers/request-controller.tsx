@@ -5,6 +5,8 @@ import Request from "../database/models/Request.js";
 import { EventSource } from "eventsource";
 import { RequestHistoryPage } from "#views/pages/requests-history";
 import { RequestPage } from "#views/pages/request";
+import { CollectionsPage } from "#views/pages/collections";
+import Collection from "#models/Collection";
 
 interface CreateRequestBody {
     url: string;
@@ -197,6 +199,13 @@ export default class RequestController {
         } else {
             return reply.status(404).send("Request not found");
         }
+    }
+
+    @route({ path: "/collections", methods: ["GET"] })
+    listCollections({ reply }: HttpContext) {
+        return reply.html(
+            <CollectionsPage />
+        )
     }
 
 }

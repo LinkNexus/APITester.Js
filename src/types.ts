@@ -11,6 +11,8 @@ declare global {
             ["app-header"]: HtmlTag;
             ["create-request-form"]: HtmlTag & { request?: string };
             ["grouped-requests"]: HtmlTag & { requests: string };
+            ["create-collection-button"]: HtmlTag;
+            ["create-collection-form"]: HtmlTag;
         }
     }
 }

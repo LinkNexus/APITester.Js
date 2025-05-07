@@ -7,6 +7,7 @@ import hljsXML from "highlight.js/lib/languages/xml"
 import hljsHTML from "highlight.js/lib/languages/xml"
 import 'highlight.js/styles/atom-one-dark.css';
 import { registerTabs } from "@/helpers/tabs";
+import { registerModals } from "./helpers/modals.js";
 
 const mutationObserver = new MutationObserver((mutations, observer) => {
     for (const mutation of mutations) {
@@ -25,4 +26,5 @@ hljs.registerLanguage("html", hljsHTML);
 
 await loadCustomElements();
 registerTabs();
+registerModals();
 
