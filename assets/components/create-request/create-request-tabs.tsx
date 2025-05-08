@@ -1,9 +1,8 @@
 import { QueryParameterSection } from "@/components/create-request/query-parameter-section";
 import { BodySection } from "@/components/create-request/body-section";
 import { HeadersSection } from "@/components/create-request/headers-section";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import type Request from "#models/Request";
-
 
 export function CreateRequestTabs({ request, requestType }: { request: Request | null, requestType: "http" | "event-source" }) {
     const bodySectionRef = useRef<HTMLDivElement | null>(null);

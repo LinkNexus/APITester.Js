@@ -9,10 +9,12 @@ declare global {
     namespace JSX {
         interface IntrinsicElements {
             ["app-header"]: HtmlTag;
-            ["create-request-form"]: HtmlTag & { request?: string };
+            ["create-request-form"]: HtmlTag & { request?: string, collection?: string, collections: string };
             ["grouped-requests"]: HtmlTag & { requests: string };
             ["create-collection-button"]: HtmlTag;
             ["create-collection-form"]: HtmlTag;
+            ["collections-list"]: HtmlTag & { collections?: string }
+            ["collections-delete-button"]: HtmlTag;
         }
     }
 }

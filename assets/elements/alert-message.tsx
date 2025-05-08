@@ -2,7 +2,10 @@ import {AbstractCustomElement} from "@/helpers/custom-elements";
 import React from "react";
 
 export default class AlertMessage extends AbstractCustomElement {
-    Element({ type, content }: { type: "success"|"error"|"info", content: string }): React.ReactNode {
+    Element({type, content}: {
+        type: "success" | "error" | "info",
+        content: string,
+    }): React.ReactNode {
         let bgClass = "";
 
         switch (type) {
@@ -18,9 +21,10 @@ export default class AlertMessage extends AbstractCustomElement {
         }
 
         return (
-            <div className={`items-center justify-center p-5 w-full text-center rounded-xl ${bgClass}`}>
+            <div
+                className={`items-center justify-center p-5 w-full text-center rounded-xl ${bgClass} ${this.className}`}>
                 {content}
             </div>
-        )
+        );
     }
 }

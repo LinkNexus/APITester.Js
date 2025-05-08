@@ -1,18 +1,26 @@
 import {AbstractCustomElement} from "@/helpers/custom-elements";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-export default class CollectionsDeleteSelectButton extends AbstractCustomElement {
+export default class CollectionsDeleteButton extends AbstractCustomElement {
     Element() {
         const [isSelecting, setIsSelecting] = useState(false);
         const deleteCollectionsInit = () => {
             document.dispatchEvent(new CustomEvent("collection.checkboxes.delete:show"));
-            setIsSelecting(true);
         }
 
         const cancelDeleteCollections = () => {
             document.dispatchEvent(new CustomEvent("collection.checkboxes.delete:hide"));
-            setIsSelecting(false);
         }
+
+        useEffect(() => {
+            document.addEventListener("collection.checkboxes.delete:hide", () => {
+                setIsSelecting(false);
+            });
+
+            document.addEventListener("collection.checkboxes.delete:show", () => {
+                setIsSelecting(true);
+            });
+        }, []);
 
         if (isSelecting) {
             return (

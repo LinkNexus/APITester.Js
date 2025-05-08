@@ -7,18 +7,19 @@ export const databaseConnection = new DatabaseSync(dbUrl);
 
 export function table(name: string) {
     return function (target: Function) {
-        target.constructor["tableName"] = name;
+        Reflect.defineMetadata("tableName", name, target);
     }
 }
 
-export function fields(fields: Record<string, any>) {
+export function fields(fields: Record<string, Function | { type: any, column: string }>) {
     return function (target: Function) {
+        Reflect.defineMetadata("fields", fields, target);
         for (const [key, value] of Object.entries(fields)) {
-            if (typeof value !== "function") {
-                throw new Error(`Field ${key} is not a valid type`);
+            if (typeof value === "function") {
+                target.prototype[key] = value();
+            } else {
+                target.prototype[key] = new (value.type)();
             }
-            Reflect.defineMetadata("fields", fields, target);
-            target.prototype[key] = value();
         }
     }
 }

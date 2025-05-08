@@ -4,6 +4,7 @@ import { CreateRequestTabs } from "@/components/create-request/create-request-ta
 import { getValuesFromEntry } from "@/helpers/dom";
 import { ResponseViewer } from "@/components/create-request/response-viewer/response-viewer";
 import type Request from "#models/Request"
+import Collection from "#models/Collection";
 
 interface FormDataType {
     requestType: string;
@@ -13,6 +14,7 @@ interface FormDataType {
     body?: string;
     filesName?: string;
     files?: File;
+    collection: string;
 }
 
 export default class CreateRequestForm extends AbstractCustomElement {
@@ -24,8 +26,10 @@ export default class CreateRequestForm extends AbstractCustomElement {
     private eventSource: EventSource | null = null;
     private setEventSourceData: (data: string | null) => void = () => { };
     private request: Request | null = null;
+    private collection: string | undefined = this.getAttribute("collection") || undefined;
+    private collections: Collection[] = this.getAttribute("collections") ? JSON.parse(this.getAttribute("collections") as string) : [];
 
-    Element({ request }: { request?: string }) {
+    Element({ request, collection }: { request?: string, collection?: string }) {
         const parsedRequest = request ? JSON.parse(request) as Request : null;
         const [res, setRes] = useState<Response | Request["response"] | null>(parsedRequest?.response || null);
         const [error, setError] = useState<string | null>(null);
@@ -50,6 +54,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                         headers: this.headers,
                         response: eventSourceData,
                         requestId: this.request?.id,
+                        collection: this.formData?.collection,
                     }),
                 })
             }
@@ -76,9 +81,21 @@ export default class CreateRequestForm extends AbstractCustomElement {
 
                 <form
                     onSubmit={createRequest}
-                    className="max-w-full w-full flex flex-col gap-y-6 dropzone"
+                    className="max-w-full w-full flex flex-col gap-y-6"
                 >
-                    <div className="w-full flex flex-col gap-x-3">
+                    <div className="w-full flex flex-col gap-y-2 ">
+                        <label htmlFor="collection">Collection</label>
+                        <select name="collection" id="collection" defaultValue={parsedRequest?.collectionId || this.collection}>
+                            <option value="none">None</option>
+                            {this.collections.map((collection) => (
+                                <option key={collection.id} value={collection.id}>
+                                    {collection.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="w-full flex flex-col gap-y-2">
                         <label htmlFor="url">Request Type</label>
                         <select
                             onChange={(e) => setRequestType(e.currentTarget.value as "http" | "event-source")}
@@ -160,6 +177,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     url: this.url,
                     bodyType: this.formData.bodyType,
                     requestId: this.request?.id,
+                    collection: this.formData.collection
                 }));
             }
 
@@ -171,6 +189,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                     body: this.body,
                     bodyType: this.formData.bodyType,
                     requestId: this.request?.id,
+                    collection: this.formData.collection
                 });
 
             return await fetch("/http-request/create", {
@@ -184,7 +203,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
             body: JSON.stringify({
                 url: this.formData?.url,
                 headers: this.headers,
-                requestType: this.formData?.requestType,
+                requestType: this.formData.requestType,
             }),
         }).then(() => {
             this.eventSource = new EventSource(this.url!);

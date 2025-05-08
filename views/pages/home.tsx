@@ -1,6 +1,7 @@
+import type Collection from "#models/Collection";
 import { BaseLayout } from "#views/layout";
 
-export function HomePage() {
+export function HomePage({ collection, collections }: { collection: string, collections: Collection[] }) {
     return (
         <BaseLayout>
             <main class="flex items-center justify-center w-full">
@@ -9,7 +10,7 @@ export function HomePage() {
                         Create a new Request
                     </h1>
 
-                    <create-request-form />
+                    <create-request-form collections={JSON.stringify(collections)} collection={collection} />
                 </div>
             </main>
         </BaseLayout>

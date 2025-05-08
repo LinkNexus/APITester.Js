@@ -1,7 +1,8 @@
+import type Collection from "#models/Collection";
 import type Request from "#models/Request";
 import { BaseLayout } from "#views/layout";
 
-export function RequestPage({ request }: { request: Request }) {
+export function RequestPage({ request, collections }: { request: Request, collections: Collection[] }) {
     return (
         <BaseLayout>
             <main class="flex items-center justify-center w-full">
@@ -10,7 +11,7 @@ export function RequestPage({ request }: { request: Request }) {
                         Edit Request
                     </h1>
 
-                    <create-request-form request={JSON.stringify(request)} />
+                    <create-request-form collections={JSON.stringify(collections)} request={JSON.stringify(request)} />
                 </div>
             </main>
         </BaseLayout>

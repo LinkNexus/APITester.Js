@@ -3,9 +3,8 @@ import { HttpContext } from "../types.js";
 import { HomePage } from "#views/pages/home";
 import Request from "../database/models/Request.js";
 import { EventSource } from "eventsource";
-import { RequestHistoryPage } from "#views/pages/requests-history";
-import { RequestPage } from "#views/pages/request";
-import { CollectionsPage } from "#views/pages/collections";
+import { RequestHistoryPage } from "#views/pages/requests/requests-history";
+import { RequestPage } from "#views/pages/requests/request";
 import Collection from "#models/Collection";
 
 interface CreateRequestBody {
@@ -15,13 +14,17 @@ interface CreateRequestBody {
     body: string | FormData | null;
     bodyType: string;
     requestId: string;
+    collection: string | undefined
 }
 
-export default class RequestController {
+export default class RequestsController {
     @route({ path: "/" })
-    createRequest({ reply }: HttpContext) {
+    createRequest({ request, reply }: HttpContext) {
+        const { collection } = request.query as { collection: string };
+        const collections = Collection.findAll();
+
         return reply.html(
-            <HomePage />
+            <HomePage collection={collection} collections={collections} />
         );
     }
 
@@ -45,8 +48,8 @@ export default class RequestController {
                 }
             }
         } else {
-            const { url, method, headers, body, bodyType, requestId } = JSON.parse(request.body as string) as CreateRequestBody;
-            data = { url, method, headers, bodyType, requestId };
+            const { url, method, headers, body, bodyType, requestId, collection } = JSON.parse(request.body as string) as CreateRequestBody;
+            data = { url, method, headers, bodyType, requestId, collection };
             requestBody = body;
         }
 
@@ -87,6 +90,7 @@ export default class RequestController {
             },
             requestType: "http",
             id: data.requestId,
+            collection: data.collection
         })
 
         return reply.status(res.status).send(resText);
@@ -113,6 +117,8 @@ export default class RequestController {
         if (request.id) {
             req.id = request.id;
         }
+
+        if (request.collection && request.collection !== "none" && Number(request.collection)) req.collectionId = request.collection;
 
         Request.saveOrCreate(req);
     }
@@ -179,13 +185,14 @@ export default class RequestController {
     @route({ path: "/requests/:id", methods: ["GET"] })
     async showRequest({ request, reply }: HttpContext) {
         const req = Request.find((request.params as { id: string }).id);
+        const collections = Collection.findAll();
 
         if (!req) {
             return reply.status(404).send("Request not found");
         }
 
         return reply.html(
-            <RequestPage request={req} />
+            <RequestPage request={req} collections={collections} />
         )
     }
 
