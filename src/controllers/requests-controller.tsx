@@ -201,11 +201,4 @@ export default class RequestController {
         }
     }
 
-    @route({ path: "/collections", methods: ["GET"] })
-    listCollections({ reply }: HttpContext) {
-        return reply.html(
-            <CollectionsPage />
-        )
-    }
-
 }
