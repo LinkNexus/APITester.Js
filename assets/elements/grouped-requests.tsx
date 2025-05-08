@@ -70,10 +70,16 @@ export default class GroupedRequests extends AbstractCustomElement {
                                                 {request.url}
                                             </span>
                                         </div>
-                                        {request.method != "undefined" && (
+                                        {request.method !== "null" && (
                                             <div>
                                                 <span className="text-lg font-semibold">Method:</span>
                                                 <span className="text-gray-500 block">{request.method}</span>
+                                            </div>
+                                        )}
+                                        {request.collection && (
+                                            <div>
+                                                <span className="text-lg font-semibold">Collection:</span>
+                                                <span className="text-gray-500 block">{request.collection.name}</span>
                                             </div>
                                         )}
                                     </div>

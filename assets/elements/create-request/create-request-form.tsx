@@ -85,7 +85,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                 >
                     <div className="w-full flex flex-col gap-y-2 ">
                         <label htmlFor="collection">Collection</label>
-                        <select name="collection" id="collection" defaultValue={parsedRequest?.collectionId || this.collection}>
+                        <select name="collection" id="collection" value={parsedRequest?.collectionId || this.collection} className="w-full">
                             <option value="none">None</option>
                             {this.collections.map((collection) => (
                                 <option key={collection.id} value={collection.id}>
@@ -202,8 +202,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
             method: "POST",
             body: JSON.stringify({
                 url: this.formData?.url,
-                headers: this.headers,
-                requestType: this.formData.requestType,
+                headers: this.headers
             }),
         }).then(() => {
             this.eventSource = new EventSource(this.url!);

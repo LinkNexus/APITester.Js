@@ -107,17 +107,14 @@ export default class RequestsController {
     saveRequestToDatabase(request: any) {
         const req = new Request();
         req.bodyType = request.bodyType;
-        req.method = request.method;
+        if (request.method) req.method = request.method;
         req.url = request.url;
         req.headers = request.headers;
-        req.body = JSON.stringify(request.body);
+        if (request.body) req.body = JSON.stringify(request.body);
         req.response = request.response;
         req.requestType = request.requestType;
         req.bodyType = request.bodyType;
-        if (request.id) {
-            req.id = request.id;
-        }
-
+        if (request.id) req.id = request.id;
         if (request.collection && request.collection !== "none" && Number(request.collection)) req.collectionId = request.collection;
 
         Request.saveOrCreate(req);
@@ -160,7 +157,7 @@ export default class RequestsController {
 
     @route({ path: "/sse/save", methods: ["POST"] })
     saveSSE({ request, reply }: HttpContext) {
-        const { url, headers, response } = JSON.parse(request.body as string);
+        const { url, headers, response, collection } = JSON.parse(request.body as string);
         this.saveRequestToDatabase({
             url,
             headers,
@@ -169,6 +166,7 @@ export default class RequestsController {
             response: {
                 text: response,
             },
+            collection: collection
         });
         return reply.status(201).send("SSE request saved");
     }

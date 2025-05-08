@@ -23,15 +23,16 @@ import Collection from "./Collection.js";
 })
 export default class Request extends AbstractModel {
     declare id: number;
-    declare method: string;
+    declare method: string | null;
     declare url: string;
     declare headers: object;
-    declare body: string;
+    declare body: string | null;
     declare response: { text: string; headers?: object; status?: number };
     declare createdAt: string;
     declare bodyType: string;
     declare requestType: "http" | "event-source";
-    declare collectionId: number;
+    declare collectionId: number | null;
+    declare collection: Collection | null;
 
     static findAllGroupedByDate() {
         return this.findAll().reduce((groups, item) => {
