@@ -34,13 +34,12 @@ export default class CollectionsList extends AbstractCustomElement {
             });
 
             if (res.ok) {
-                setCollections((prevState) => prevState.filter((collection) => ids.includes(collection.id)));
+                setCollections((prevState) => prevState.filter((collection) => !ids.includes(collection.id)));
             } else {
                 console.error("Error deleting collection:", res.statusText);
             }
 
-            setCollections((prevState) => prevState.filter((collection) => !ids.includes(collection.id)));
-            document.dispatchEvent(new CustomEvent("collection.checkboxes.delete:hide"));
+            document.dispatchEvent(new CustomEvent("entities.checkboxes.delete:hide"));
         }
 
         useEffect(() => {
@@ -48,11 +47,11 @@ export default class CollectionsList extends AbstractCustomElement {
                 setCollections((prevState) => [...prevState, (e as CustomEvent).detail]);
             });
 
-            document.addEventListener("collection.checkboxes.delete:show", () => {
+            document.addEventListener("entities.checkboxes.delete:show", () => {
                 setIsSelecting(true);
             });
 
-            document.addEventListener("collection.checkboxes.delete:hide", () => {
+            document.addEventListener("entities.checkboxes.delete:hide", () => {
                 setIsSelecting(false);
             })
         }, []);

@@ -1,10 +1,11 @@
+import { useState, type MouseEventHandler } from "react";
 import type Request from "#models/Request";
 import { AbstractCustomElement } from "@/helpers/custom-elements";
-import { MouseEventHandler, ReactNode, useState } from "react";
+import type Collection from "#models/Collection";
 
 export default class GroupedRequests extends AbstractCustomElement {
-    Element({ requests }: { requests: string }): ReactNode {
-        const [groupedRequests, setGroupedRequests] = useState<Record<string, Request[]>>(JSON.parse(requests));
+    Element({ requests, withoutCollectionName }: { requests: string, withoutCollectionName?: string }) {
+        const [groupedRequests, setGroupedRequests] = useState<Record<string, (Request & { collection: Collection })[]>>(JSON.parse(requests));
 
         const deleteRequest: MouseEventHandler<HTMLButtonElement> = (e) => {
             const requestId = e.currentTarget.dataset.requestId;
@@ -21,7 +22,7 @@ export default class GroupedRequests extends AbstractCustomElement {
                                 acc[date] = filteredRequests;
                             }
                             return acc;
-                        }, {} as Record<string, Request[]>);
+                        }, {} as Record<string, (Request & { collection: Collection })[]>);
 
                         setGroupedRequests(updatedRequests);
                     }
@@ -34,6 +35,7 @@ export default class GroupedRequests extends AbstractCustomElement {
         return (
             <div className="flex flex-col gap-8 w-full">
                 {Object.entries(groupedRequests).map(([date, requests]) => (
+                    console.log(requests),
                     <div className="w-full" key={date}>
                         <div className="mb-5">
                             <h2 className="text-2xl font-bold">
@@ -76,7 +78,7 @@ export default class GroupedRequests extends AbstractCustomElement {
                                                 <span className="text-gray-500 block">{request.method}</span>
                                             </div>
                                         )}
-                                        {request.collection && (
+                                        {withoutCollectionName && withoutCollectionName !== "true" && request.collection && (
                                             <div>
                                                 <span className="text-lg font-semibold">Collection:</span>
                                                 <span className="text-gray-500 block">{request.collection.name}</span>
@@ -105,6 +107,6 @@ export default class GroupedRequests extends AbstractCustomElement {
                     </div>
                 ))}
             </div>
-        );
+        )
     }
 }

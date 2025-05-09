@@ -1,6 +1,6 @@
 import { fields, table } from "../connection.js";
 import { AbstractModel } from "./AbstractModel.js";
-import { formatDateToDay } from "#helpers/utils";
+import { formatDateToDay, groupByDate } from "#helpers/utils";
 import Collection from "./Collection.js";
 
 @table("requests")
@@ -17,7 +17,7 @@ import Collection from "./Collection.js";
     requestType: String,
     collectionId: Number,
     collection: {
-        type: Collection,
+        type: () => Collection,
         column: "collectionId"
     }
 })
@@ -32,16 +32,14 @@ export default class Request extends AbstractModel {
     declare bodyType: string;
     declare requestType: "http" | "event-source";
     declare collectionId: number | null;
-    declare collection: Collection | null;
+    declare getCollection: () => (Collection | null);
 
     static findAllGroupedByDate() {
-        return this.findAll().reduce((groups, item) => {
-            const dateKey = formatDateToDay(new Date(item.createdAt));
-            if (!groups[dateKey]) {
-                groups[dateKey] = [];
-            }
-            groups[dateKey].push(item);
-            return groups;
-        }, {} as Record<string, typeof Request[]>);
+        const requests = this.findAll().map(item => ({
+            ...item,
+            collection: item.getCollection()
+        }));
+
+        return groupByDate(requests, "createdAt");
     }
 }

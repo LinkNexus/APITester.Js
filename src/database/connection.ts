@@ -1,5 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import "reflect-metadata";
+import { capitalizeFirstLetter } from "../../assets/helpers/string-manipulation.js";
 
 const dbUrl = process.env.DATABASE_URL || "database.db";
 
@@ -18,7 +19,7 @@ export function fields(fields: Record<string, Function | { type: any, column: st
             if (typeof value === "function") {
                 target.prototype[key] = value();
             } else {
-                target.prototype[key] = new (value.type)();
+                target.prototype[`get${capitalizeFirstLetter(key)}`] = () => new (value.type)();
             }
         }
     }

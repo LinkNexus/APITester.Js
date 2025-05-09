@@ -157,7 +157,7 @@ export default class RequestsController {
 
     @route({ path: "/sse/save", methods: ["POST"] })
     saveSSE({ request, reply }: HttpContext) {
-        const { url, headers, response, collection } = JSON.parse(request.body as string);
+        const { url, headers, response, collection, requestId } = JSON.parse(request.body as string);
         this.saveRequestToDatabase({
             url,
             headers,
@@ -166,7 +166,8 @@ export default class RequestsController {
             response: {
                 text: response,
             },
-            collection: collection
+            collection: collection,
+            id: requestId,
         });
         return reply.status(201).send("SSE request saved");
     }

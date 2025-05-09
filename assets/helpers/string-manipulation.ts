@@ -6,7 +6,11 @@ export function upperCamelToDashCase(str: string) {
 }
 
 export function dashToCamel(str) {
-    return str.replace(/-([a-z])/g, function(match, letter) {
+    return str.replace(/-([a-z])/g, function (match, letter) {
         return letter.toUpperCase();
     });
+}
+
+export function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

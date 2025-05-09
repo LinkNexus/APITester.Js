@@ -85,7 +85,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
                 >
                     <div className="w-full flex flex-col gap-y-2 ">
                         <label htmlFor="collection">Collection</label>
-                        <select name="collection" id="collection" value={parsedRequest?.collectionId || this.collection} className="w-full">
+                        <select name="collection" id="collection" defaultValue={parsedRequest?.collectionId || this.collection} className="w-full">
                             <option value="none">None</option>
                             {this.collections.map((collection) => (
                                 <option key={collection.id} value={collection.id}>

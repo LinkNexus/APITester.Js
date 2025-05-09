@@ -1,6 +1,7 @@
 import type { DatabaseSync } from "node:sqlite";
 import { databaseConnection } from "../connection.js";
 import "reflect-metadata";
+import { capitalizeFirstLetter } from "../../../assets/helpers/string-manipulation.js";
 
 export abstract class AbstractModel {
     protected static connection: DatabaseSync = databaseConnection;
@@ -36,8 +37,8 @@ export abstract class AbstractModel {
                     instance[key] = (value as any)(data[key]);
                 }
             } else {
-                if (typeof value === "object" && value.type.prototype instanceof AbstractModel) {
-                    instance[key] = value.type.find(data[value.column]);
+                if (typeof value === "object" && value.type().prototype instanceof AbstractModel) {
+                    instance[`get${capitalizeFirstLetter(key)}`] = () => value.type().find(data[value.column]);
                 }
             }
         }
@@ -80,5 +81,16 @@ export abstract class AbstractModel {
     static delete(id: number | string | bigint) {
         const query = `DELETE FROM ${this.getTableName()} WHERE id = ?`;
         this.connection.prepare(query).run(id);
+    }
+
+    static findAllBy(criterias: Record<string, any>) {
+        const query = `SELECT * FROM ${this.getTableName()} WHERE ${Object.keys(criterias)
+            .map((key) => `${key} = ?`)
+            .join(" AND ")}`;
+        const statement = this.connection.prepare(query);
+        const entries = statement.all(...Object.values(criterias));
+        return entries.map((entry: any) => {
+            return this.hydrate(entry);
+        });
     }
 }

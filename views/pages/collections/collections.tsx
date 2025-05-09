@@ -1,7 +1,7 @@
-import {BaseLayout} from "#views/layout";
+import { BaseLayout } from "#views/layout";
 import type Collection from "#models/Collection";
 
-export function CollectionsPage({collections}: { collections: Collection[] }) {
+export function CollectionsPage({ collections }: { collections: Collection[] }) {
     return (
         <BaseLayout>
             <main class="flex flex-wrap items-center justify-center w-full">
@@ -13,21 +13,21 @@ export function CollectionsPage({collections}: { collections: Collection[] }) {
 
                     <div class="ml-auto flex gap-x-4">
                         <button data-modal-open="create-collection"
-                                class="flex items-center gap-x-2 cursor-pointer clickable hover:text-primary">
+                            class="flex items-center gap-x-2 cursor-pointer clickable hover:text-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width={1.5}
-                                 stroke="currentColor" class="size-6 text-primary">
+                                stroke="currentColor" class="size-6 text-primary">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                             <span>Create</span>
                         </button>
 
-                        <collections-delete-button/>
+                        <entities-delete-button />
                     </div>
 
-                    <collections-list collections={JSON.stringify(collections)}/>
+                    <collections-list collections={JSON.stringify(collections)} />
 
-                    <create-collection-form/>
+                    <create-collection-form />
                 </div>
             </main>
         </BaseLayout>
