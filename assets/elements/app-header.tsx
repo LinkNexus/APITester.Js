@@ -52,6 +52,9 @@ export default class AppHeader extends AbstractCustomElement {
                                 <li>
                                     <a href="/requests" className="hover:text-primary-light">History</a>
                                 </li>
+                                <li>
+                                    <a href="/requests/import" className="hover:text-primary-light">Import</a>
+                                </li>
                             </ul>
 
                             <div className="hover:bg-primary focus:bg-primary p-2 rounded clickable md:hidden" onClick={toggleMenu}>
@@ -74,6 +77,9 @@ export default class AppHeader extends AbstractCustomElement {
                     </a>
                     <a href="/requests" className="bg-secondary w-full flex p-3 hover:bg-primary">
                         History
+                    </a>
+                    <a href="/requests/import" className="bg-secondary w-full flex p-3 hover:bg-primary">
+                        Import
                     </a>
                 </div>
             </header>

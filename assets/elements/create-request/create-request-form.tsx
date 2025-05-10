@@ -29,7 +29,7 @@ export default class CreateRequestForm extends AbstractCustomElement {
     private collection: string | undefined = this.getAttribute("collection") || undefined;
     private collections: Collection[] = this.getAttribute("collections") ? JSON.parse(this.getAttribute("collections") as string) : [];
 
-    Element({ request, collection }: { request?: string, collection?: string }) {
+    Element({ request }: { request?: string }) {
         const parsedRequest = request ? JSON.parse(request) as Request : null;
         const [res, setRes] = useState<Response | Request["response"] | null>(parsedRequest?.response || null);
         const [error, setError] = useState<string | null>(null);

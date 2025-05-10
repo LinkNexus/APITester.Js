@@ -18,7 +18,7 @@ import Collection from "./Collection.js";
     collectionId: Number,
     collection: {
         type: () => Collection,
-        column: "collectionId"
+        foreignKey: "collectionId"
     }
 })
 export default class Request extends AbstractModel {

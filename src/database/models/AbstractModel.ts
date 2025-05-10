@@ -10,7 +10,7 @@ export abstract class AbstractModel {
         return Reflect.getMetadata("tableName", this);
     }
 
-    protected static getProps(): Record<string, { type: any; column?: string } | Function> {
+    protected static getProps(): Record<string, { type: any; collectionEntity?: any; foreignKey?: string } | Function> {
         return Reflect.getMetadata("fields", this);
     }
 
@@ -31,14 +31,17 @@ export abstract class AbstractModel {
         const instance = new this();
         for (const [key, value] of Object.entries(this.getProps())) {
             if (typeof value === "function") {
-                if (typeof (value as any)() === "object") {
+                if (typeof (value as any)() === "object" && data[key] && data[key] !== null && data[key] !== "undefined") {
                     instance[key] = JSON.parse(data[key]);
                 } else {
                     instance[key] = (value as any)(data[key]);
                 }
             } else {
-                if (typeof value === "object" && value.type().prototype instanceof AbstractModel) {
-                    instance[`get${capitalizeFirstLetter(key)}`] = () => value.type().find(data[value.column]);
+                if (typeof value === "object") {
+                    if (value.type && value.type().prototype instanceof AbstractModel) instance[`get${capitalizeFirstLetter(key)}`] = () => value.type().find(data[value.foreignKey]);
+                    else if (value.collectionEntity && value.collectionEntity().prototype instanceof AbstractModel) {
+                        instance[`get${capitalizeFirstLetter(key)}`] = () => value.collectionEntity().findAllBy({ [value.foreignKey]: data.id });
+                    }
                 }
             }
         }
@@ -80,6 +83,17 @@ export abstract class AbstractModel {
 
     static delete(id: number | string | bigint) {
         const query = `DELETE FROM ${this.getTableName()} WHERE id = ?`;
+        const props = this.getProps();
+        for (const [key, value] of Object.entries(props)) {
+            if (typeof value === "object" && value.foreignKey) {
+                if (value.collectionEntity && value.collectionEntity().prototype instanceof AbstractModel) {
+                    const relatedEntities = value.collectionEntity().findAllBy({ [value.foreignKey]: id });
+                    for (const entity of relatedEntities) {
+                        value.collectionEntity().delete(entity.id);
+                    }
+                }
+            }
+        }
         this.connection.prepare(query).run(id);
     }
 

@@ -32,7 +32,7 @@ export function CollectionPage({ collection }: { collection: Collection }) {
                         </div>
                     </div>
 
-                    <grouped-requests without-collection-name="true" requests={JSON.stringify(Collection.findAllRequestsGroupedByDate(collection.id))} />
+                    <grouped-requests without-collection-name="true" requests={JSON.stringify(collection.getAllRequestsGroupedByDate())} />
                 </div>
             </main>
         </BaseLayout>

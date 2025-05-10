@@ -7,19 +7,23 @@ import Request from "./Request.js";
 @fields({
     id: Number,
     name: String,
-    description: String
+    description: String,
+    requests: {
+        collectionEntity: () => Request,
+        foreignKey: "collectionId"
+    }
 })
 export default class Collection extends AbstractModel {
     declare id: number;
     declare name: string;
     declare description: string;
+    declare getRequests: () => Request[];
 
-    static findAllRequestsGroupedByDate(collectionId: number | string | bigint) {
-        const requests = Request.findAllBy({ collectionId: Number(collectionId) })
-            .map(request => ({
-                ...request,
-                collection: request.getCollection()
-            }));
+    getAllRequestsGroupedByDate() {
+        const requests = this.getRequests().map(request => ({
+            ...request,
+            collection: request.getCollection()
+        }));
 
         return groupByDate(requests, "createdAt");
     }

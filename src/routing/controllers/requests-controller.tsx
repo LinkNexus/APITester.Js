@@ -1,11 +1,12 @@
-import { route } from "../routing/routes.js";
-import { HttpContext } from "../types.js";
+import { route } from "../routes.js";
+import { HttpContext } from "../../types.js";
 import { HomePage } from "#views/pages/home";
-import Request from "../database/models/Request.js";
+import Request from "../../database/models/Request.js";
 import { EventSource } from "eventsource";
 import { RequestHistoryPage } from "#views/pages/requests/requests-history";
 import { RequestPage } from "#views/pages/requests/request";
 import Collection from "#models/Collection";
+import { ImportRequestPage } from "#views/pages/requests/import-request";
 
 interface CreateRequestBody {
     url: string;
@@ -117,7 +118,7 @@ export default class RequestsController {
         if (request.id) req.id = request.id;
         if (request.collection && request.collection !== "none" && Number(request.collection)) req.collectionId = request.collection;
 
-        Request.saveOrCreate(req);
+        return Request.saveOrCreate(req);
     }
 
     @route({ path: "/sse/create", methods: ["POST"] })
@@ -181,6 +182,40 @@ export default class RequestsController {
         )
     }
 
+    @route({ path: "/requests/import", methods: ["GET", "POST"] })
+    importFromCurl({ request, reply }: HttpContext) {
+        const inferBodyType = (req) => {
+            if (req.body) {
+                if (req.body instanceof FormData) {
+                    return "form-data";
+                } else if (req.header && req.header["content-type"]) {
+                    const contentType = req.headers["content-type"];
+                    if (contentType.includes("json")) return "json";
+                    else if (contentType.includes("xml")) return "xml";
+                    else if (contentType.includes("text")) return "text";
+                    else if (contentType.includes("html")) return "html";
+                }
+                else return "text";
+            }
+            return "no-body";
+        }
+
+        if (request.method === "POST") {
+            const req = JSON.parse(request.body as string);
+
+            return reply.status(201).send(this.saveRequestToDatabase({
+                ...req,
+                requestType: "http",
+                bodyType: inferBodyType(req),
+                response: null
+            }));
+        }
+
+        return reply.html(
+            <ImportRequestPage collections={Collection.findAll()} />
+        );
+    }
+
     @route({ path: "/requests/:id", methods: ["GET"] })
     async showRequest({ request, reply }: HttpContext) {
         const req = Request.find((request.params as { id: string }).id);
@@ -205,6 +240,14 @@ export default class RequestsController {
         } else {
             return reply.status(404).send("Request not found");
         }
+    }
+
+    @route({ path: "/requests", methods: ["DELETE"] })
+    deleteRequests({ request, reply }: HttpContext) {
+        for (const id of JSON.parse(request.body as string)) {
+            Request.delete(id);
+        }
+        return reply.status(204).send("Collections deleted");
     }
 
 }

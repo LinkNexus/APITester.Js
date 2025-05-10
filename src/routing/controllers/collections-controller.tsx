@@ -1,5 +1,5 @@
-import { route } from "../routing/routes.js";
-import { HttpContext } from "../types.js";
+import { route } from "../routes.js";
+import { HttpContext } from "../../types.js";
 import { CollectionsPage } from "#views/pages/collections/collections";
 import Collection from "#models/Collection";
 import { CollectionPage } from "#views/pages/collections/collection";
@@ -31,7 +31,7 @@ export default class CollectionsController {
 
     @route({ path: "/collections", methods: ["DELETE"] })
     deleteCollections({ request, reply }: HttpContext) {
-        for (const id of request.body as string[]) {
+        for (const id of JSON.parse(request.body as string)) {
             Collection.delete(id);
         }
 

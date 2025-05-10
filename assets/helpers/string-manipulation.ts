@@ -5,8 +5,8 @@ export function upperCamelToDashCase(str: string) {
         .toLowerCase();
 }
 
-export function dashToCamel(str) {
-    return str.replace(/-([a-z])/g, function (match, letter) {
+export function dashToCamel(str: string) {
+    return str.replace(/-([a-z])/g, function (_: string, letter: string): string {
         return letter.toUpperCase();
     });
 }

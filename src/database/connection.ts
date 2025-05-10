@@ -12,14 +12,20 @@ export function table(name: string) {
     }
 }
 
-export function fields(fields: Record<string, Function | { type: any, column: string }>) {
+export function fields(fields: Record<string, Function | { type?: any, collectionEntity?: any, foreignKey?: string }>) {
     return function (target: Function) {
         Reflect.defineMetadata("fields", fields, target);
         for (const [key, value] of Object.entries(fields)) {
             if (typeof value === "function") {
                 target.prototype[key] = value();
             } else {
-                target.prototype[`get${capitalizeFirstLetter(key)}`] = () => new (value.type)();
+                if (value.collectionEntity) {
+                    target.prototype[`get${capitalizeFirstLetter(key)}`] = function () {
+                        return [];
+                    }
+                } else if (value.type) {
+                    target.prototype[`get${capitalizeFirstLetter(key)}`] = () => new (value.type())();
+                }
             }
         }
     }

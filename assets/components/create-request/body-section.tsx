@@ -13,19 +13,19 @@ export function BodySection({ request }: { request: Request | null }) {
 
     useEffect(() => {
         if (request && ["json", "html", "xml", "text"].includes(request.bodyType)) {
-            setCode(request.body.replace(/^"|"$/g, '')
+            setCode(request.body!.replace(/^"|"$/g, '')
                 .replace(/\\n/g, '\n')
                 .replace(/\\"/g, '"'));
         }
 
         if (request && request.bodyType === "form-data") {
-            for (const [key, value] of Object.entries(JSON.parse(request.body))) {
+            for (const [key, value] of Object.entries(JSON.parse(request.body!))) {
                 addQueryEntry(key, value as string);
             }
         }
 
         if (request && request.bodyType === "form-url-encoded") {
-            for (const [key, value] of Array.from(new URLSearchParams(request.body.replace(/^"|"$/g, '')))) {
+            for (const [key, value] of Array.from(new URLSearchParams(request.body!.replace(/^"|"$/g, '')))) {
                 addQueryEntry(key, value);
             }
         }

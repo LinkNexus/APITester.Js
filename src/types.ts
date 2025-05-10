@@ -15,6 +15,7 @@ declare global {
             ["create-collection-form"]: HtmlTag;
             ["collections-list"]: HtmlTag & { collections?: string }
             ["entities-delete-button"]: HtmlTag;
+            ["import-request-form"]: HtmlTag & { collections: string };
         }
     }
 }

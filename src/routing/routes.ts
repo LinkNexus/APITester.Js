@@ -10,7 +10,7 @@ interface RouteMetadata {
 export const route = ({ path, methods = ["GET"] }: RouteMetadata) => Reflect.metadata("routes", { path, methods });
 
 export async function registerRoutes(app: FastifyInstance) {
-    const controllers = await listModules("./src/controllers");
+    const controllers = await listModules("./src/routing/controllers");
 
     controllers.forEach((controller) => {
         const { default: Controller } = controller;
