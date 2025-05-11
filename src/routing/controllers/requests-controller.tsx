@@ -184,29 +184,12 @@ export default class RequestsController {
 
     @route({ path: "/requests/import", methods: ["GET", "POST"] })
     importFromCurl({ request, reply }: HttpContext) {
-        const inferBodyType = (req) => {
-            if (req.body) {
-                if (req.body instanceof FormData) {
-                    return "form-data";
-                } else if (req.header && req.header["content-type"]) {
-                    const contentType = req.headers["content-type"];
-                    if (contentType.includes("json")) return "json";
-                    else if (contentType.includes("xml")) return "xml";
-                    else if (contentType.includes("text")) return "text";
-                    else if (contentType.includes("html")) return "html";
-                }
-                else return "text";
-            }
-            return "no-body";
-        }
-
         if (request.method === "POST") {
             const req = JSON.parse(request.body as string);
 
             return reply.status(201).send(this.saveRequestToDatabase({
                 ...req,
                 requestType: "http",
-                bodyType: inferBodyType(req),
                 response: null
             }));
         }

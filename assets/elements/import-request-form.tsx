@@ -2,7 +2,7 @@ import { AbstractCustomElement } from "@/helpers/custom-elements";
 import hljs from "highlight.js";
 import Editor from "react-simple-code-editor";
 import { useState } from "react";
-import parseCurl from "parse-curl";
+import { parseCurl } from "@/helpers/parse-curl";
 import type Request from "#models/Request";
 import Collection from "#models/Collection";
 
@@ -45,17 +45,12 @@ export default class ImportRequestForm extends AbstractCustomElement {
 
     async importRequest(formData: FormData) {
         const code = formData.get("code") as string;
-        const parsedCode = parseCurl(code);
-        const headers = Object.fromEntries(
-            Object.entries(parsedCode.header ?? {}).map(([key, value]) => [key.toLowerCase(), value])
-        );
 
         const res = await fetch("/requests/import", {
             method: "POST",
             body: JSON.stringify({
                 collection: formData.get("collection"),
-                ...parsedCode,
-                headers,
+                ...parseCurl(code)
             })
         });
 
