@@ -1,8 +1,8 @@
-import { route } from "../routes.js";
-import { HttpContext } from "../../types.js";
-import { CollectionsPage } from "#views/pages/collections/collections";
+import {route} from "../routes.js";
+import {HttpContext} from "../../types.js";
+import {CollectionsPage} from "#views/pages/collections/collections";
 import Collection from "#models/Collection";
-import { CollectionPage } from "#views/pages/collections/collection";
+import {CollectionPage} from "#views/pages/collections/collection";
 
 export default class CollectionsController {
     @route({ path: "/collections", methods: ["GET"] })
@@ -16,7 +16,7 @@ export default class CollectionsController {
     @route({ path: "/collections", methods: ["POST"] })
     createCollection({ request, reply }: HttpContext) {
         try {
-            return Collection.save(request.body);
+            return Collection.create(request.body);
         } catch (e) {
             return reply.status(403).send(e);
         }

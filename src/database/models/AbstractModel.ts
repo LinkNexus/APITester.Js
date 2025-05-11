@@ -1,7 +1,7 @@
-import type { DatabaseSync } from "node:sqlite";
-import { databaseConnection } from "../connection.js";
+import type {DatabaseSync} from "node:sqlite";
+import {databaseConnection} from "../connection.js";
 import "reflect-metadata";
-import { capitalizeFirstLetter } from "../../../assets/helpers/string-manipulation.js";
+import {capitalizeFirstLetter} from "../../../assets/helpers/string-manipulation.js";
 
 export abstract class AbstractModel {
     protected static connection: DatabaseSync = databaseConnection;
@@ -66,7 +66,7 @@ export abstract class AbstractModel {
         return this.hydrate(entry);
     }
 
-    static save<T>(data: T) {
+    static create(data: any) {
         const { fields, values } = this.getFieldsFromData(data);
         const query = `INSERT INTO ${this.getTableName()} (${fields})
                        VALUES (${values})`;
@@ -74,7 +74,7 @@ export abstract class AbstractModel {
         return this.find(statement.lastInsertRowid);
     }
 
-    static saveOrCreate(data: any) {
+    static updateOrCreate(data: any) {
         const { fields, values } = this.getFieldsFromData(data);
         const query = `INSERT OR REPLACE INTO ${this.getTableName()} (${fields}) VALUES (${values})`;
         const statement = this.connection.prepare(query).run();

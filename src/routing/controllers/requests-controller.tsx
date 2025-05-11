@@ -1,12 +1,12 @@
-import { route } from "../routes.js";
-import { HttpContext } from "../../types.js";
-import { HomePage } from "#views/pages/home";
+import {route} from "../routes.js";
+import {HttpContext} from "../../types.js";
+import {HomePage} from "#views/pages/home";
 import Request from "../../database/models/Request.js";
-import { EventSource } from "eventsource";
-import { RequestHistoryPage } from "#views/pages/requests/requests-history";
-import { RequestPage } from "#views/pages/requests/request";
+import {EventSource} from "eventsource";
+import {RequestHistoryPage} from "#views/pages/requests/requests-history";
+import {RequestPage} from "#views/pages/requests/request";
 import Collection from "#models/Collection";
-import { ImportRequestPage } from "#views/pages/requests/import-request";
+import {ImportRequestPage} from "#views/pages/requests/import-request";
 
 interface CreateRequestBody {
     url: string;
@@ -118,7 +118,7 @@ export default class RequestsController {
         if (request.id) req.id = request.id;
         if (request.collection && request.collection !== "none" && Number(request.collection)) req.collectionId = request.collection;
 
-        return Request.saveOrCreate(req);
+        return Request.updateOrCreate(req);
     }
 
     @route({ path: "/sse/create", methods: ["POST"] })
