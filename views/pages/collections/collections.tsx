@@ -3,7 +3,7 @@ import type Collection from "#models/Collection";
 
 export function CollectionsPage({ collections }: { collections: Collection[] }) {
     return (
-        <BaseLayout>
+        <BaseLayout title="Collections" description="Manage your collections">
             <main class="flex flex-wrap items-center justify-center w-full">
                 <div
                     class="lg:max-w-[80%] lg:w-[90%] overflow-auto background-gradient rounded-xl flex flex-col items-center justify-center gap-y-3 py-5 px-8 w-full">

@@ -26,6 +26,8 @@ Note: There is a docker integration of the app for Docker fanatics, but it is no
 - Permits also the upload of files.
 - Setting of headers
 - Support of Query Params
+- Can import requests from cURL
+- Possibility to create and manage requests collections
 
 ## License
 
