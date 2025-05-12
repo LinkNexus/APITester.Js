@@ -2,6 +2,10 @@ import { AbstractCustomElement } from "@/helpers/custom-elements";
 import { useEffect, useState } from "react";
 
 export default class EntitiesDeleteButton extends AbstractCustomElement {
+    getTagName(): string {
+        return "entities-delete-button";
+    }
+
     Element() {
         const [isSelecting, setIsSelecting] = useState(false);
         const deleteRequestsInit = () => {

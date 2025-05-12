@@ -1,7 +1,7 @@
-import type {DatabaseSync} from "node:sqlite";
-import {databaseConnection} from "../connection.js";
+import type { DatabaseSync } from "node:sqlite";
+import { databaseConnection } from "../connection.js";
 import "reflect-metadata";
-import {capitalizeFirstLetter} from "../../../assets/helpers/string-manipulation.js";
+import { capitalizeFirstLetter } from "../../../assets/helpers/string-manipulation.js";
 
 export abstract class AbstractModel {
     protected static connection: DatabaseSync = databaseConnection;
@@ -103,6 +103,44 @@ export abstract class AbstractModel {
             .join(" AND ")}`;
         const statement = this.connection.prepare(query);
         const entries = statement.all(...Object.values(criterias));
+        return entries.map((entry: any) => {
+            return this.hydrate(entry);
+        });
+    }
+
+    static searchBy(
+        criterias: Record<string, string | { type: "contains" | "startsWith" | "endsWith", value: string }>,
+        options: { joinWith?: "AND" | "OR" } = { joinWith: "AND" }
+    ) {
+        const joinOperator = options.joinWith || "AND";
+        const query = `SELECT * FROM ${this.getTableName()} WHERE ${Object.keys(criterias)
+            .map((key) => {
+                const value = criterias[key];
+
+                if (typeof value === "string") {
+                    return `${key} LIKE ?`;
+                } else if (typeof value === "object") {
+                    return `${key} LIKE ?`;
+                }
+            })
+            .join(` ${joinOperator} `)}`;
+        const statement = this.connection.prepare(query);
+        const entries = statement.all(
+            ...Object.entries(criterias).map(([key, value]) => {
+                if (typeof value === "string") {
+                    return `%${value}%`;
+                } else if (typeof value === "object") {
+                    switch (value.type) {
+                        case "contains":
+                            return `%${value.value}%`;
+                        case "startsWith":
+                            return `${value.value}%`;
+                        case "endsWith":
+                            return `%${value.value}`;
+                    }
+                }
+            })
+        );
         return entries.map((entry: any) => {
             return this.hydrate(entry);
         });

@@ -3,6 +3,10 @@ import { ReactNode, useId } from "react";
 import { FileUploader } from "react-drag-drop-files";
 
 export default class QueryEntry extends AbstractCustomElement {
+    getTagName(): string {
+        return "query-entry";
+    }
+
     Element({ title, isFile, keyVal, value }: { title: string, isFile: string, keyVal?: string, value?: string }): ReactNode {
         const fileTypes = ["JPG", "PNG", "GIF"];
         const id = useId();

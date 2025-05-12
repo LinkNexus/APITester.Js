@@ -16,7 +16,7 @@ export default defineConfig({
                 ]
             }
         }),
-        tailwindcss(),
+        tailwindcss()
     ],
     server: {
         port: VITE_PORT ? parseInt(VITE_PORT, 10) : 5333,

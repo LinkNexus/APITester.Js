@@ -1,7 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AbstractCustomElement } from "@/helpers/custom-elements";
 
 export default class AppHeader extends AbstractCustomElement {
+    getTagName() {
+        return "app-header";
+    }
+
     Element() {
         const subMenuRef = useRef<HTMLDivElement>(null);
         const headerRef = useRef<HTMLHeadingElement>(null);
@@ -20,17 +24,25 @@ export default class AppHeader extends AbstractCustomElement {
             })
         }, []);
 
+        function handleSearch(event: React.KeyboardEvent<HTMLInputElement>) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const $form = event.currentTarget.closest("form");
+                $form?.submit();
+            }
+        }
+
         return (
-            <header ref={headerRef} className="w-full sticky top-0 z-[5]">
+            <header ref={headerRef} className="w-full sticky top-0 z-[5] overflow-y-auto">
                 <div className="flex px-3 py-3 md:px-8 items-center justify-between gap-x-6 mb-5">
                     <div className="flex items-center flex-wrap gap-x-2 lg:ml-4">
                         <img className="w-12" src="/logo.png" alt="Logo" />
                         <span className="h-fit text-xl inline-block font-semibold">ApiTester.Js</span>
                     </div>
 
-                    <div className="mx-auto hidden lg:block w-[40%]">
-                        <input type="search" className="w-full" placeholder="Search..." />
-                    </div>
+                    <form action="/search" method="POST" className="mx-auto hidden lg:block w-[40%]">
+                        <input name="query" onKeyDown={handleSearch} type="search" className="w-full" placeholder="Search..." />
+                    </form>
 
                     <div className="flex h-full w-fit items-center gap-x-6">
                         <div className="hover:bg-primary focus:bg-primary p-2 rounded clickable lg:hidden">

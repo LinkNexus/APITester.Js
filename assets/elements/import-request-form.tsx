@@ -7,6 +7,10 @@ import type Request from "#models/Request";
 import Collection from "#models/Collection";
 
 export default class ImportRequestForm extends AbstractCustomElement {
+    getTagName(): string {
+        return "import-request-form";
+    }
+
     private collections: Collection[] = JSON.parse(this.getAttribute("collections") || "[]");
 
     Element() {

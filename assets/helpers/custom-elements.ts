@@ -1,6 +1,6 @@
-import {createElement, ReactNode} from "react";
-import {createRoot, Root} from "react-dom/client";
-import {dashToCamel, upperCamelToDashCase} from "@/helpers/string-manipulation";
+import { createElement, ReactNode } from "react";
+import { createRoot, Root } from "react-dom/client";
+import { dashToCamel, upperCamelToDashCase } from "@/helpers/string-manipulation";
 
 export async function loadCustomElements() {
     const modules = import.meta.glob([
@@ -10,14 +10,16 @@ export async function loadCustomElements() {
 
     for (const module of Object.values(modules)) {
         const element = await module() as any;
-        if (element) customElements.define(upperCamelToDashCase(element.name), element);
+        if (element && element.prototype.getTagName)
+            customElements.define(upperCamelToDashCase(element.prototype.getTagName()), element);
     }
 }
 
-export abstract class AbstractCustomElement extends HTMLElement{
+export abstract class AbstractCustomElement extends HTMLElement {
     private root?: Root;
 
     abstract Element(props?: any): ReactNode;
+    abstract getTagName(): string;
 
     protected getAllAttributes() {
         return [...this.attributes].reduce<Record<string, string>>((acc, attr) => {

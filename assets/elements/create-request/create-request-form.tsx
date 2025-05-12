@@ -18,6 +18,10 @@ interface FormDataType {
 }
 
 export default class CreateRequestForm extends AbstractCustomElement {
+    getTagName(): string {
+        return "create-request-form";
+    }
+
     private $form: HTMLFormElement | null = null;
     private formData: FormDataType | null = null;
     private headers: Record<string, string> = {};

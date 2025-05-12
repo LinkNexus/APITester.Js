@@ -4,6 +4,10 @@ import { AbstractCustomElement } from "@/helpers/custom-elements";
 import type Collection from "#models/Collection";
 
 export default class GroupedRequests extends AbstractCustomElement {
+    getTagName(): string {
+        return "grouped-requests";
+    }
+
     Element({ requests, withoutCollectionName }: { requests: string, withoutCollectionName?: string }) {
         const [groupedRequests, setGroupedRequests] = useState<Record<string, (Request & { collection: Collection })[]>>(JSON.parse(requests));
         const [isSelecting, setIsSelecting] = useState(false);

@@ -1,6 +1,0 @@
-services:
-  apitesterjs:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    

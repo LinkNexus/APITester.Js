@@ -1,8 +1,12 @@
-import {AbstractCustomElement} from "@/helpers/custom-elements";
+import { AbstractCustomElement } from "@/helpers/custom-elements";
 import React from "react";
 
 export default class AlertMessage extends AbstractCustomElement {
-    Element({type, content}: {
+    getTagName(): string {
+        return "alert-message";
+    }
+
+    Element({ type, content }: {
         type: "success" | "error" | "info",
         content: string,
     }): React.ReactNode {

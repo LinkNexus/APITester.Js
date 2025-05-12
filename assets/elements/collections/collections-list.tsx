@@ -4,6 +4,10 @@ import { MouseEventHandler, useEffect, useState } from "react";
 import { DeleteButton } from "@/components/buttons/delete-button";
 
 export default class CollectionsList extends AbstractCustomElement {
+    getTagName(): string {
+        return "collections-list";
+    }
+
     private collections: Collection[] = JSON.parse(this.getAttribute("collections") || "[]");
 
     Element() {

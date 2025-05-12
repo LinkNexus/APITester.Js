@@ -27,7 +27,7 @@ hljs.registerLanguage("xml", hljsXML);
 hljs.registerLanguage("html", hljsHTML);
 hljs.registerLanguage("curl", hljsCurl);
 
-await loadCustomElements();
+loadCustomElements();
 registerTabs();
 registerModals();
 
