@@ -29,6 +29,7 @@ You can pull the Docker image with the command `docker pull levynkeneng205/apite
 - Support of Query Params
 - Can import requests from cURL
 - Possibility to create and manage requests collections
+- Integrated search
 
 ## License
 
