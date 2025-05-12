@@ -17,7 +17,7 @@ A [NodeJs](https://nodejs.org/)-based tool permitting to rapidly do requests to 
 6. Run the app with `npm run server`
 
 Note: There is a docker integration of the app for Docker fanatics, but it is note that requests to localhost and other local domains will not be effective because of Docker closed nature, since requests are done by NodeJS and not the browser.
-You can pull the Docker image with the command `docker pull levynkeneng205/apitester-js:latest` and run it with `docker run -p 3333:3333 levynkeneng205/apitester-js:latest`
+You can pull the Docker image with the command `docker pull levynkeneng205/apitester-js:latest` and run it with `docker run -p 3333:3333 levynkeneng205/apitester-js:latest`, then go on (http://localhost:3333)[localhost:3333] to use the tool.
 
 ## Features
 
